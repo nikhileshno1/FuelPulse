@@ -1,0 +1,7 @@
+Flask
+gunicorn
+mysql-connector-python
+numpy
+pandas
+matplotlib
+python-dotenv

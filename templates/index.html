@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Consumption Analysis System</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+</head>
+<body>
+
+<!-- ============================ LANDING ============================ -->
+<div id="landing" class="view">
+    <header class="topbar">
+        <div class="brand"><span class="brand-mark">⛽</span><span>Fuel Consumption Analysis</span></div>
+        <button class="btn-ghost on-dark" data-open-auth="login">Sign In</button>
+    </header>
+
+    <section class="hero">
+        <div class="hero-text">
+            <span class="eyebrow">Smart fuel tracking for cars, bikes, trucks and buses</span>
+            <h1>Know exactly what every kilometre <span class="grad">really costs</span> you.</h1>
+            <p>Log each fill-up and the system works out true fuel efficiency, monthly spending and cost per kilometre.
+                It separates accurate full-tank figures from rough estimates, catches impossible odometer readings,
+                and turns your records into clear charts.</p>
+            <div class="hero-actions">
+                <button class="btn-primary lg" data-open-auth="signup">Create free account</button>
+                <button class="btn-ghost lg" data-open-auth="login">Sign in to your dashboard</button>
+            </div>
+            <ul class="hero-points">
+                <li>✔ Accurate full-tank mileage</li>
+                <li>✔ Private data for every user</li>
+                <li>✔ Admin control panel</li>
+            </ul>
+        </div>
+
+        <div class="hero-preview" aria-hidden="true">
+            <div class="preview-head"><span>Sample preview</span><span class="badge badge-full">Full-tank</span></div>
+            <div class="preview-grid">
+                <div><small>Mileage</small><strong>16.4 km/L</strong></div>
+                <div><small>Cost per km</small><strong>₹5.82</strong></div>
+                <div><small>Monthly spend</small><strong>₹3,391</strong></div>
+                <div><small>Vehicles</small><strong>2 cars · 1 bike</strong></div>
+            </div>
+            <div class="preview-bars">
+                <span style="height:55%"></span><span style="height:70%"></span><span style="height:62%"></span>
+                <span style="height:85%"></span><span style="height:74%"></span><span style="height:92%"></span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-title">
+            <span class="eyebrow">What you get</span>
+            <h2>Everything you need to track fuel smartly</h2>
+        </div>
+        <div class="feature-grid">
+            <article class="feature"><div class="feature-icon">📏</div><h3>Accurate mileage</h3>
+                <p>Calculated between full-tank fills, with partial top-ups included in the fuel total.</p></article>
+            <article class="feature"><div class="feature-icon">💰</div><h3>Expense tracking</h3>
+                <p>See monthly spending, average price per litre and fuel bought for every vehicle.</p></article>
+            <article class="feature"><div class="feature-icon">🛣️</div><h3>Cost per kilometre</h3>
+                <p>Find out which vehicle is cheapest to run, and whether it is getting more expensive.</p></article>
+            <article class="feature"><div class="feature-icon">⚠️</div><h3>Smart validation</h3>
+                <p>Odometer errors and zero-litre entries are flagged in an invalid-reading report.</p></article>
+            <article class="feature"><div class="feature-icon">📈</div><h3>Visual analytics</h3>
+                <p>Interactive dashboards, monthly trend charts and CSV exports for every report.</p></article>
+            <article class="feature"><div class="feature-icon">🔒</div><h3>Private by design</h3>
+                <p>Each user sees only their own vehicles. Admins can view and manage every account.</p></article>
+        </div>
+    </section>
+
+    <section class="section steps-section">
+        <div class="section-title">
+            <span class="eyebrow">How it works</span>
+            <h2>Three steps to clearer fuel data</h2>
+        </div>
+        <div class="steps">
+            <div class="step"><span class="step-no">1</span><h3>Add your vehicles</h3>
+                <p>Register each car, bike, truck or bus with its fuel type.</p></div>
+            <div class="step"><span class="step-no">2</span><h3>Log every fill-up</h3>
+                <p>Enter the date, odometer reading, litres and cost. Mark partial fills as partial.</p></div>
+            <div class="step"><span class="step-no">3</span><h3>Read the insights</h3>
+                <p>Dashboards, charts and reports update automatically as your data grows.</p></div>
+        </div>
+    </section>
+
+    <section class="section roles">
+        <div class="role-card">
+            <h3>👤 For users</h3>
+            <p>Track your own vehicles, see your mileage, costs and charts, and edit your records at any time.</p>
+        </div>
+        <div class="role-card admin">
+            <h3>🛡️ For admins</h3>
+            <p>View every account's data and analytics, edit records on behalf of any user, and manage accounts.</p>
+        </div>
+    </section>
+
+    <footer class="site-footer">Fuel Consumption Analysis System</footer>
+</div>
+
+<!-- ============================ APP ============================ -->
+<div id="app-view" class="view">
+    <header class="topbar">
+        <div class="brand"><span class="brand-mark">⛽</span><span>Fuel Consumption Analysis</span></div>
+        <div class="top-right">
+            <div class="user-chip">
+                <span class="avatar" id="user-initial">?</span>
+                <span id="user-name"></span>
+                <span id="user-role" class="role-badge user">User</span>
+            </div>
+            <button class="btn-ghost on-dark sm" id="account-btn">My account</button>
+            <button class="btn-ghost on-dark sm" id="logout-btn">Logout</button>
+        </div>
+    </header>
+
+    <nav class="tabs">
+        <button class="nav-btn active" data-page="dashboard">📊 Dashboard</button>
+        <button class="nav-btn" data-page="vehicles">🚗 Vehicles</button>
+        <button class="nav-btn" data-page="records">⛽ Fuel Records</button>
+        <button class="nav-btn" data-page="analytics">📈 Analytics</button>
+        <button class="nav-btn" data-page="invalid">⚠️ Invalid <span id="invalid-badge" class="count-badge" hidden>0</span></button>
+        <button class="nav-btn admin-only" data-page="users">👥 Users</button>
+    </nav>
+
+    <main class="container">
+        <div id="scope-bar" class="scope-bar admin-only" hidden>
+            <label for="scope-select">Viewing</label>
+            <select id="scope-select"></select>
+            <span id="scope-text"></span>
+        </div>
+
+        <div id="message" class="message" hidden></div>
+
+        <!-- Dashboard -->
+        <section id="page-dashboard" class="page active">
+            <div class="page-head">
+                <div>
+                    <h2 id="dash-title">Dashboard</h2>
+                    <p id="dash-sub"></p>
+                </div>
+            </div>
+
+            <div id="user-dashboard">
+                <div class="stats-grid" id="user-stats"></div>
+                <div class="dash-grid">
+                    <div class="panel"><h3>Monthly fuel spend</h3><div class="chart-box"><canvas id="chart-spend"></canvas></div></div>
+                    <div class="panel"><h3>Spend share by vehicle</h3><div class="chart-box"><canvas id="chart-share"></canvas></div></div>
+                    <div class="panel"><h3>Mileage by vehicle (km/L)</h3><div class="chart-box"><canvas id="chart-mileage"></canvas></div></div>
+                    <div class="panel"><h3>Monthly mileage trend (full-tank)</h3><div class="chart-box"><canvas id="chart-trend"></canvas></div></div>
+                </div>
+                <div class="panel-head"><h3>Recent fuel records</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Date</th><th>Vehicle</th><th>Litres</th><th>Cost</th></tr></thead>
+                        <tbody id="recent-records"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-overview" hidden>
+                <div class="stats-grid" id="admin-stats"></div>
+                <div class="dash-grid">
+                    <div class="panel wide"><h3>Total spend by user</h3><div class="chart-box"><canvas id="chart-users"></canvas></div></div>
+                </div>
+                <div class="panel-head"><h3>All accounts</h3></div>
+                <div class="user-cards" id="user-cards"></div>
+            </div>
+        </section>
+
+        <!-- Vehicles -->
+        <section id="page-vehicles" class="page">
+            <div class="page-head">
+                <div>
+                    <h2>Vehicles</h2>
+                    <p>Register each car, bike, truck or bus you want to track.</p>
+                </div>
+            </div>
+
+            <form id="vehicle-form" class="panel form-grid form-narrow">
+                <h3>Add a vehicle</h3>
+                <div class="field admin-only">
+                    <label for="vehicle-owner">Owner</label>
+                    <select id="vehicle-owner"></select>
+                </div>
+                <div class="field">
+                    <label for="vehicle-code">Vehicle code</label>
+                    <input id="vehicle-code" required maxlength="30" placeholder="e.g. CAR001">
+                </div>
+                <div class="field">
+                    <label for="vehicle-type">Type</label>
+                    <select id="vehicle-type" required>
+                        <option value="">Select type</option>
+                        <option>Car</option><option>Bike</option><option>Truck</option><option>Bus</option><option>Other</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="fuel-type">Fuel</label>
+                    <select id="fuel-type" required>
+                        <option value="">Select fuel</option>
+                        <option>Petrol</option><option>Diesel</option><option>CNG</option><option>Electric</option><option>Hybrid</option>
+                    </select>
+                </div>
+                <button class="btn-primary" type="submit">Add vehicle</button>
+            </form>
+
+            <div class="panel-head"><h3>Registered vehicles</h3></div>
+            <div class="vehicle-grid" id="vehicle-grid"></div>
+        </section>
+
+        <!-- Fuel records -->
+        <section id="page-records" class="page">
+            <div class="page-head">
+                <div>
+                    <h2>Fuel records</h2>
+                    <p>Log every fill-up. Accurate mileage needs two full-tank fills for the same vehicle.</p>
+                </div>
+            </div>
+
+            <form id="record-form" class="panel form-grid">
+                <h3>Add a fill-up</h3>
+                <div class="field span-2">
+                    <label for="record-vehicle">Vehicle</label>
+                    <select id="record-vehicle" required></select>
+                </div>
+                <div class="field">
+                    <label for="fill-date">Fill date</label>
+                    <input type="date" id="fill-date" required>
+                </div>
+                <div class="field">
+                    <label for="odometer">Odometer (km)</label>
+                    <input type="number" id="odometer" min="0" step="0.01" required>
+                </div>
+                <div class="field">
+                    <label for="litres">Fuel quantity (litres)</label>
+                    <input type="number" id="litres" min="0.001" step="0.001" required>
+                </div>
+                <div class="field">
+                    <label for="total-cost">Total cost (₹)</label>
+                    <input type="number" id="total-cost" min="0" step="0.01" required>
+                </div>
+                <label class="checkbox-label span-2">
+                    <input type="checkbox" id="full-tank" checked>
+                    Tank filled to full
+                </label>
+                <p class="hint span-2">Untick for a partial fill. Accurate mileage is only calculated between two full-tank fills.
+                    Odometer readings must increase with the fill date.</p>
+                <button class="btn-primary span-2" type="submit">Add fuel record</button>
+            </form>
+
+            <div class="panel-head"><h3>Fuel history</h3></div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th><th class="admin-only">Owner</th><th>Vehicle</th><th>Odometer</th><th>Litres</th>
+                            <th>Cost</th><th>Fill</th><th>Distance</th><th>Mileage</th><th>Basis</th><th>Status</th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="fuel-list"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Analytics -->
+        <section id="page-analytics" class="page">
+            <div class="page-head">
+                <div>
+                    <h2>Fuel analytics</h2>
+                    <p>Detailed calculations, reports and charts.</p>
+                </div>
+            </div>
+
+            <div id="analytics-empty" class="empty-state big" hidden>
+                <div class="empty-icon">🔍</div>
+                <h3>Pick a user to see their analytics</h3>
+                <p>Choose a user from the <strong>Viewing</strong> box above. Analytics are calculated per owner, so each person's numbers stay separate.</p>
+            </div>
+
+            <div id="analytics-body">
+                <div class="note">
+                    <strong>How mileage is calculated</strong>
+                    <ul>
+                        <li><span class="badge badge-full">Full-tank</span> Distance between two full-tank fills divided by all fuel bought after the first fill, up to and including the second. Partial fills in between are added to the fuel total. This is the accurate figure.</li>
+                        <li><span class="badge badge-approx">Approximate</span> Distance between two valid readings divided by the litres bought at the later fill. It assumes fuel bought equals fuel burned, so partial fills make it unreliable. Use it only as a rough guide.</li>
+                        <li>An invalid reading breaks the chain: no distance or mileage is calculated across it. Expense totals still include any record with positive litres and a non-negative cost.</li>
+                    </ul>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card tone-navy"><div class="stat-icon">📍</div><div><span class="stat-label">Distance (valid readings)</span><strong class="stat-value" id="analytics-distance">0 km</strong></div></div>
+                    <div class="stat-card tone-green"><div class="stat-icon">📏</div><div><span class="stat-label">Mileage · Full-tank</span><strong class="stat-value" id="analytics-mileage">N/A</strong></div></div>
+                    <div class="stat-card tone-amber"><div class="stat-icon">〰️</div><div><span class="stat-label">Mileage · Approx.</span><strong class="stat-value" id="analytics-approx">N/A</strong></div></div>
+                    <div class="stat-card tone-purple"><div class="stat-icon">🧮</div><div><span class="stat-label">Cost per km · Full-tank</span><strong class="stat-value" id="analytics-cost-km">N/A</strong></div></div>
+                </div>
+
+                <div class="panel-head">
+                    <h3>Vehicle-wise mileage report</h3>
+                    <a class="btn-ghost sm" data-export="vehicle-mileage">Download CSV</a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr>
+                            <th>Rank</th><th>Vehicle</th><th>Fuel</th><th>Full-tank segments</th>
+                            <th>Full-tank km/L</th><th>Full-tank ₹/km</th><th>Approx. km/L</th><th>Approx. ₹/km</th><th>Invalid</th>
+                        </tr></thead>
+                        <tbody id="vehicle-analytics"></tbody>
+                    </table>
+                </div>
+
+                <div class="panel-head">
+                    <h3>Fuel expense summary</h3>
+                    <a class="btn-ghost sm" data-export="monthly-summary">Download monthly CSV</a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Vehicle</th><th>Records</th><th>Fuel (L)</th><th>Cost (₹)</th><th>Avg ₹/L</th><th>Full-tank distance (km)</th></tr></thead>
+                        <tbody id="expense-analytics"></tbody>
+                    </table>
+                </div>
+
+                <div class="panel-head"><h3>Monthly fuel report</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr>
+                            <th>Month</th><th>Records</th><th>Fuel (L)</th><th>Cost (₹)</th><th>Avg ₹/L</th>
+                            <th>Full-tank km/L</th><th>Full-tank ₹/km</th><th>Approx. km/L</th>
+                        </tr></thead>
+                        <tbody id="monthly-analytics"></tbody>
+                    </table>
+                </div>
+
+                <div class="panel-head"><h3>Month-wise full-tank mileage by vehicle (km/L)</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead id="pivot-head"></thead>
+                        <tbody id="pivot-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="panel-head">
+                    <h3>Full-tank segments</h3>
+                    <a class="btn-ghost sm" data-export="full-tank-segments">Download CSV</a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Vehicle</th><th>From</th><th>To</th><th>Distance (km)</th><th>Fuel (L)</th><th>Partial fills</th><th>km/L</th><th>₹/km</th></tr></thead>
+                        <tbody id="segment-list"></tbody>
+                    </table>
+                </div>
+
+                <div class="panel-head"><h3>Visual analysis</h3></div>
+                <div id="charts" class="chart-grid"></div>
+            </div>
+        </section>
+
+        <!-- Invalid readings -->
+        <section id="page-invalid" class="page">
+            <div class="page-head">
+                <div>
+                    <h2>Invalid reading report</h2>
+                    <p>These records are left out of distance and mileage calculations. Fix the record or delete it and add a corrected one.</p>
+                </div>
+                <a class="btn-ghost sm" data-export="invalid-readings">Download CSV</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th class="admin-only">Owner</th><th>Vehicle</th><th>Date</th><th>Odometer</th>
+                        <th>Litres</th><th>Cost</th><th>Fill</th><th>Reason</th><th></th>
+                    </tr></thead>
+                    <tbody id="invalid-list"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Users (admin only) -->
+        <section id="page-users" class="page">
+            <div class="page-head">
+                <div>
+                    <h2>User accounts</h2>
+                    <p>Every account on the system. Admins can open any user's data, edit their details or remove the account.</p>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>Username</th><th>Role</th><th>Vehicles</th><th>Records</th><th>Fuel</th>
+                        <th>Spend</th><th>Mileage</th><th>Joined</th><th></th>
+                    </tr></thead>
+                    <tbody id="users-list"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">Fuel Consumption Analysis System</footer>
+</div>
+
+<!-- ============================ AUTH DIALOG ============================ -->
+<dialog id="auth-dialog" class="modal">
+    <div class="modal-card">
+        <div class="modal-head">
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Sign in</button>
+                <button class="auth-tab" data-tab="signup">Create account</button>
+            </div>
+            <button type="button" class="icon-btn" data-close aria-label="Close">✕</button>
+        </div>
+
+        <form id="login-form" class="form-grid">
+            <div class="field">
+                <label for="login-username">Username</label>
+                <input id="login-username" required autocomplete="username">
+            </div>
+            <div class="field">
+                <label for="login-password">Password</label>
+                <input id="login-password" type="password" required autocomplete="current-password">
+            </div>
+            <p id="login-error" class="form-error" hidden></p>
+            <button class="btn-primary block" type="submit">Sign in</button>
+        </form>
+
+        <form id="signup-form" class="form-grid" hidden>
+            <div class="field">
+                <label for="signup-username">Choose a username</label>
+                <input id="signup-username" required minlength="3" maxlength="50"
+                       pattern="[A-Za-z0-9_.\-]+" autocomplete="username">
+                <small class="hint">3–50 characters: letters, numbers, dot, dash or underscore.</small>
+            </div>
+            <div class="field">
+                <label for="signup-password">Create a password</label>
+                <input id="signup-password" type="password" required minlength="6" autocomplete="new-password">
+            </div>
+            <div class="field">
+                <label for="signup-confirm">Confirm password</label>
+                <input id="signup-confirm" type="password" required minlength="6" autocomplete="new-password">
+            </div>
+            <p id="signup-error" class="form-error" hidden></p>
+            <button class="btn-primary block" type="submit">Create account</button>
+        </form>
+    </div>
+</dialog>
+
+<!-- ============================ EDIT DIALOG ============================ -->
+<dialog id="edit-dialog" class="modal">
+    <form id="edit-form" class="modal-card">
+        <div class="modal-head">
+            <h3 id="edit-title">Edit</h3>
+            <button type="button" class="icon-btn" data-close aria-label="Close">✕</button>
+        </div>
+        <div id="edit-fields" class="form-grid"></div>
+        <p id="edit-error" class="form-error" hidden></p>
+        <div class="modal-actions">
+            <button type="button" class="btn-ghost" data-close>Cancel</button>
+            <button type="submit" class="btn-primary">Save changes</button>
+        </div>
+    </form>
+</dialog>
+
+<script>
+    // ------------------------------------------------------------------
+    // Constants and state
+    // ------------------------------------------------------------------
+    const VEHICLE_ICONS = { Car: "🚗", Bike: "🏍️", Truck: "🚚", Bus: "🚌", Other: "🚙" };
+    const VEHICLE_TYPES = ["Car", "Bike", "Truck", "Bus", "Other"];
+    const FUEL_TYPES = ["Petrol", "Diesel", "CNG", "Electric", "Hybrid"];
+    const PALETTE = ["#146b67", "#e0a030", "#2e86ab", "#c0392b", "#7d5ba6", "#5b8c3a", "#d35400", "#102a43"];
+    const CHART_CARDS = [
+        ["monthly_cost", "Monthly Fuel Cost", false],
+        ["monthly_fuel", "Monthly Fuel Consumption", false],
+        ["monthly_mileage", "Monthly Mileage Trend", true],
+        ["vehicle_mileage", "Vehicle Mileage Comparison", false],
+        ["vehicle_cost_per_km", "Fuel Cost per km", false],
+        ["vehicle_cost", "Vehicle-wise Fuel Cost", false],
+    ];
+
+    const state = {
+        user: null,
+        page: "dashboard",
+        scope: null,            // admin only: selected user id, or null for all users
+        users: [],
+        cache: { vehicles: {}, records: {}, users: {} },
+        charts: {},
+    };
+    let editSave = null;
+
+    // ------------------------------------------------------------------
+    // Formatting and helpers
+    // ------------------------------------------------------------------
+    const $ = id => document.getElementById(id);
+    const money = value => "₹" + Number(value || 0).toLocaleString("en-IN", {
+        minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const num = (value, digits = 2) => Number(value || 0).toLocaleString("en-IN", { maximumFractionDigits: digits });
+    const orNA = (value, format = num, suffix = "") =>
+        value === null || value === undefined ? "N/A" : format(value) + suffix;
+    const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => (
+        { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+
+    function showMessage(text, isError = false) {
+        const box = $("message");
+        box.textContent = text;
+        box.className = isError ? "message error" : "message success";
+        box.hidden = false;
+        clearTimeout(showMessage.timer);
+        showMessage.timer = setTimeout(() => { box.hidden = true; }, 5000);
+    }
+
+    function setFormError(id, text) {
+        const box = $(id);
+        box.textContent = text;
+        box.hidden = !text;
+    }
+
+    async function api(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            headers: { "Content-Type": "application/json" },
+        });
+        let data = {};
+        try { data = await response.json(); } catch (_) { /* empty body */ }
+        if (!response.ok) throw new Error(data.error || "Something went wrong.");
+        return data;
+    }
+
+    const isAdmin = () => Boolean(state.user && state.user.role === "admin");
+    const isAdminOverview = () => isAdmin() && !state.scope;
+    const userName = id => (state.users.find(u => u.user_id === id) || {}).username || "User";
+
+    // Adds ?user_id= for admins who picked a user. Users are always scoped by the server.
+    function scoped(url) {
+        if (!isAdmin() || !state.scope) return url;
+        return url + (url.includes("?") ? "&" : "?") + "user_id=" + state.scope;
+    }
+
+    function showView(id) {
+        document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === id));
+        window.scrollTo(0, 0);
+    }
+
+    function setBadge(count) {
+        const badge = $("invalid-badge");
+        badge.textContent = count;
+        badge.hidden = !count;
+    }
+
+    function statCards(items) {
+        return items.map(([icon, label, value, tone]) => `
+            <div class="stat-card ${tone}">
+                <div class="stat-icon">${icon}</div>
+                <div><span class="stat-label">${esc(label)}</span><strong class="stat-value">${value}</strong></div>
+            </div>`).join("");
+    }
+
+    function basisBadge(basis) {
+        if (basis === "Full-tank") return '<span class="badge badge-full">Full-tank</span>';
+        if (basis === "Approximate") return '<span class="badge badge-approx">Approximate</span>';
+        return "—";
+    }
+
+    function drawChart(id, config) {
+        if (!window.Chart) return;
+        if (state.charts[id]) state.charts[id].destroy();
+        state.charts[id] = new Chart($(id), config);
+    }
+
+    // ------------------------------------------------------------------
+    // Auth: landing, sign in, sign up
+    // ------------------------------------------------------------------
+    function setAuthTab(tab) {
+        document.querySelectorAll(".auth-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+        $("login-form").hidden = tab !== "login";
+        $("signup-form").hidden = tab !== "signup";
+        setFormError("login-error", "");
+        setFormError("signup-error", "");
+    }
+
+    function openAuth(tab) {
+        setAuthTab(tab);
+        $("auth-dialog").showModal();
+    }
+
+    document.querySelectorAll("[data-open-auth]").forEach(button =>
+        button.addEventListener("click", () => openAuth(button.dataset.openAuth)));
+    document.querySelectorAll(".auth-tab").forEach(button =>
+        button.addEventListener("click", () => setAuthTab(button.dataset.tab)));
+    document.querySelectorAll("[data-close]").forEach(button =>
+        button.addEventListener("click", () => button.closest("dialog").close()));
+
+    $("login-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        setFormError("login-error", "");
+        try {
+            const data = await api("/api/auth/login", {
+                method: "POST",
+                body: JSON.stringify({
+                    username: $("login-username").value.trim(),
+                    password: $("login-password").value,
+                }),
+            });
+            event.target.reset();
+            $("auth-dialog").close();
+            enterApp(data.user);
+        } catch (err) {
+            setFormError("login-error", err.message);
+        }
+    });
+
+    $("signup-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        setFormError("signup-error", "");
+        if ($("signup-password").value !== $("signup-confirm").value) {
+            setFormError("signup-error", "Passwords do not match.");
+            return;
+        }
+        try {
+            const data = await api("/api/auth/signup", {
+                method: "POST",
+                body: JSON.stringify({
+                    username: $("signup-username").value.trim(),
+                    password: $("signup-password").value,
+                }),
+            });
+            event.target.reset();
+            $("auth-dialog").close();
+            enterApp(data.user);
+            showMessage(`Welcome, ${data.user.username}! Your account is ready.`);
+        } catch (err) {
+            setFormError("signup-error", err.message);
+        }
+    });
+
+    $("logout-btn").addEventListener("click", async () => {
+        await api("/api/auth/logout", { method: "POST" });
+        Object.values(state.charts).forEach(chart => chart.destroy());
+        state.charts = {};
+        state.user = null;
+        document.body.classList.remove("is-admin");
+        showView("landing");
+    });
+
+    // ------------------------------------------------------------------
+    // App shell and navigation
+    // ------------------------------------------------------------------
+    async function enterApp(user) {
+        state.user = user;
+        state.scope = null;
+        state.cache = { vehicles: {}, records: {}, users: {} };
+        document.body.classList.toggle("is-admin", isAdmin());
+        $("user-name").textContent = user.username;
+        $("user-initial").textContent = user.username.charAt(0).toUpperCase();
+        $("user-role").textContent = isAdmin() ? "Admin" : "User";
+        $("user-role").className = "role-badge " + user.role;
+        showView("app-view");
+        if (isAdmin()) {
+            try { await loadUsers(); } catch (err) { showMessage(err.message, true); }
+        }
+        showPage("dashboard");
+    }
+
+    const LOADERS = {
+        dashboard: () => loadDashboard(),
+        vehicles: () => loadVehicles(),
+        records: () => loadRecords(),
+        analytics: () => loadAnalytics(),
+        invalid: () => loadInvalid(),
+        users: () => loadUsers(),
+    };
+
+    function showPage(page) {
+        state.page = page;
+        document.querySelectorAll(".page").forEach(section =>
+            section.classList.toggle("active", section.id === "page-" + page));
+        document.querySelectorAll(".nav-btn").forEach(button =>
+            button.classList.toggle("active", button.dataset.page === page));
+        $("scope-bar").hidden = !isAdmin();
+        loadPage(page);
+    }
+
+    async function loadPage(page) {
+        try {
+            await LOADERS[page]();
+        } catch (err) {
+            showMessage(err.message, true);
+        }
+    }
+
+    async function refresh() {
+        if (isAdmin()) {
+            try { await loadUsers(); } catch (err) { showMessage(err.message, true); }
+        }
+        await loadPage(state.page);
+        updateBadge();
+    }
+
+    async function updateBadge() {
+        try {
+            const rows = await api(scoped("/api/invalid-readings"));
+            setBadge(rows.length);
+        } catch (_) { /* badge is optional */ }
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(button =>
+        button.addEventListener("click", () => showPage(button.dataset.page)));
+
+    $("account-btn").addEventListener("click", () => editAccount(state.user.user_id));
+
+    $("scope-select").addEventListener("change", event => {
+        state.scope = event.target.value ? Number(event.target.value) : null;
+        renderScopeSelect();
+        loadPage(state.page);
+        updateBadge();
+    });
+
+    // ------------------------------------------------------------------
+    // Users (admin)
+    // ------------------------------------------------------------------
+    async function loadUsers() {
+        const users = await api("/api/users");
+        state.users = users;
+        state.cache.users = Object.fromEntries(users.map(u => [u.user_id, u]));
+        if (state.scope && !users.some(u => u.user_id === state.scope)) state.scope = null;
+        renderScopeSelect();
+        populateOwnerSelect();
+        renderUsersTable();
+    }
+
+    function renderScopeSelect() {
+        if (!isAdmin()) return;
+        const select = $("scope-select");
+        select.innerHTML = '<option value="">All users (overview)</option>' +
+            state.users.map(u => `<option value="${u.user_id}">${esc(u.username)} · ${esc(u.role)}</option>`).join("");
+        select.value = state.scope || "";
+        $("scope-text").textContent = state.scope
+            ? `Showing ${userName(state.scope)}'s private data. Changes you make apply to this account.`
+            : "Overview mode. Pick a user to see their vehicles, analytics and charts.";
+    }
+
+    function populateOwnerSelect() {
+        if (!isAdmin() || !state.users.length) return;
+        const select = $("vehicle-owner");
+        select.innerHTML = state.users.map(u => `<option value="${u.user_id}">${esc(u.username)}</option>`).join("");
+        select.value = state.scope || state.user.user_id;
+    }
+
+    function renderUsersTable() {
+        $("users-list").innerHTML = state.users.map(u => `
+            <tr>
+                <td><strong>${esc(u.username)}</strong></td>
+                <td><span class="role-badge ${esc(u.role)}">${esc(u.role)}</span></td>
+                <td>${u.total_vehicles}</td>
+                <td>${u.total_records}</td>
+                <td>${num(u.total_litres)} L</td>
+                <td>${money(u.total_cost)}</td>
+                <td>${orNA(u.fulltank_mileage, num, " km/L")}</td>
+                <td>${esc(String(u.created_at).slice(0, 10))}</td>
+                <td class="actions">
+                    <button class="btn-small" data-action="view-user" data-id="${u.user_id}">View data</button>
+                    <button class="btn-small" data-action="edit-user" data-id="${u.user_id}">Edit</button>
+                    ${u.user_id === state.user.user_id ? "" :
+                        `<button class="btn-small btn-danger" data-action="delete-user" data-id="${u.user_id}">Delete</button>`}
+                </td>
+            </tr>`).join("") || '<tr><td colspan="9" class="empty-cell">No accounts yet.</td></tr>';
+    }
+
+    function userCardHtml(u) {
+        return `
+            <article class="user-card">
+                <div class="user-card-head">
+                    <span class="avatar lg">${esc(u.username.charAt(0).toUpperCase())}</span>
+                    <div>
+                        <h4>${esc(u.username)}</h4>
+                        <span class="role-badge ${esc(u.role)}">${esc(u.role)}</span>
+                    </div>
+                </div>
+                <div class="user-metrics">
+                    <div><small>Vehicles</small><strong>${u.total_vehicles}</strong></div>
+                    <div><small>Records</small><strong>${u.total_records}</strong></div>
+                    <div><small>Spend</small><strong>${money(u.total_cost)}</strong></div>
+                    <div><small>Mileage</small><strong>${orNA(u.fulltank_mileage, num, " km/L")}</strong></div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-small" data-action="view-user" data-id="${u.user_id}">View data</button>
+                    <button class="btn-small" data-action="edit-user" data-id="${u.user_id}">Edit</button>
+                    ${u.user_id === state.user.user_id ? "" :
+                        `<button class="btn-small btn-danger" data-action="delete-user" data-id="${u.user_id}">Delete</button>`}
+                </div>
+            </article>`;
+    }
+
+    function editAccount(id) {
+        const self = id === state.user.user_id;
+        const target = self ? state.user : state.cache.users[id];
+        if (!target) return;
+
+        const fields = [{ name: "username", label: "Username", value: target.username, required: true, maxlength: 50 }];
+        if (isAdmin()) {
+            fields.push({ name: "role", label: "Role", type: "select", options: ["user", "admin"],
+                          value: target.role, disabled: self });
+        }
+        fields.push({ name: "new_password", label: "New password (leave blank to keep current)", type: "password", value: "" });
+        if (self) {
+            fields.push({ name: "current_password", label: "Current password (needed to change password)", type: "password", value: "" });
+        }
+
+        openEditDialog(self ? "My account" : `Edit ${target.username}`, fields, async values => {
+            const body = {
+                username: values.username.trim(),
+                new_password: values.new_password,
+                current_password: values.current_password || "",
+            };
+            if (isAdmin() && values.role !== undefined) body.role = values.role;
+            await saveChange(`/api/users/${id}`, "PUT", body, "Account updated.");
+            if (self) {
+                const { user } = await api("/api/auth/me");
+                state.user = user;
+                $("user-name").textContent = user.username;
+                $("user-initial").textContent = user.username.charAt(0).toUpperCase();
+            }
+        });
+    }
+
+    function deleteUserAccount(id) {
+        const name = (state.cache.users[id] || {}).username || "this user";
+        return deleteItem(`/api/users/${id}`,
+            `account "${name}" and all of its vehicles and fuel records`, refresh);
+    }
+
+    // ------------------------------------------------------------------
+    // Dashboard
+    // ------------------------------------------------------------------
+    async function loadDashboard() {
+        if (isAdminOverview()) {
+            await loadUsers();
+            return renderAdminOverview();
+        }
+
+        const [analytics, records] = await Promise.all([
+            api(scoped("/api/analytics")),
+            api(scoped("/api/fuel-records")),
+        ]);
+        const t = analytics.totals;
+        const who = isAdmin() ? userName(state.scope) : state.user.username;
+
+        $("dash-title").textContent = isAdmin() ? `${who}'s dashboard` : `Welcome back, ${who}`;
+        $("dash-sub").textContent = "Your fuel economy, spending and latest activity at a glance.";
+        $("admin-overview").hidden = true;
+        $("user-dashboard").hidden = false;
+
+        $("user-stats").innerHTML = statCards([
+            ["🚗", "Vehicles", num(t.total_vehicles, 0), "tone-teal"],
+            ["⛽", "Fuel bought", num(t.total_litres) + " L", "tone-amber"],
+            ["💰", "Total spend", money(t.total_cost), "tone-blue"],
+            ["📏", "Mileage (full-tank)", orNA(t.fulltank_mileage, num, " km/L"), "tone-green"],
+            ["🧮", "Cost per km", orNA(t.fulltank_cost_per_km, money), "tone-purple"],
+            ["📍", "Distance covered", num(t.total_distance) + " km", "tone-navy"],
+            ["💧", "Avg price / litre", orNA(t.avg_price_per_litre, money), "tone-teal"],
+            ["⚠️", "Invalid readings", num(t.invalid_records, 0), "tone-red"],
+        ]);
+
+        $("recent-records").innerHTML = records.slice(0, 6).map(r => `
+            <tr>
+                <td>${esc(r.fill_date)}</td>
+                <td>${esc(r.vehicle_code)}</td>
+                <td>${num(r.litres, 2)} L</td>
+                <td>${money(r.total_cost)}</td>
+            </tr>`).join("") || '<tr><td colspan="4" class="empty-cell">No fuel records yet.</td></tr>';
+
+        renderUserCharts(analytics);
+    }
+
+    function renderUserCharts(analytics) {
+        const monthly = analytics.monthly;
+        const vehicles = analytics.vehicles;
+        const labels = vehicles.map(v => v.vehicle_code);
+        const axisOptions = { y: { beginAtZero: true, grid: { color: "#eef3f6" } }, x: { grid: { display: false } } };
+
+        drawChart("chart-spend", {
+            type: "bar",
+            data: { labels: monthly.map(m => m.month), datasets: [{
+                label: "Spend (₹)", data: monthly.map(m => m.total_cost),
+                backgroundColor: "#146b67", borderRadius: 8 }] },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: axisOptions },
+        });
+
+        drawChart("chart-share", {
+            type: "doughnut",
+            data: { labels, datasets: [{ data: vehicles.map(v => v.total_cost),
+                backgroundColor: PALETTE, borderWidth: 0 }] },
+            options: { maintainAspectRatio: false, cutout: "62%", plugins: { legend: { position: "bottom" } } },
+        });
+
+        drawChart("chart-mileage", {
+            type: "bar",
+            data: { labels, datasets: [
+                { label: "Full-tank km/L", data: vehicles.map(v => v.fulltank_mileage), backgroundColor: "#146b67", borderRadius: 8 },
+                { label: "Approximate km/L", data: vehicles.map(v => v.approx_mileage), backgroundColor: "#e0a030", borderRadius: 8 },
+            ] },
+            options: { maintainAspectRatio: false, scales: axisOptions },
+        });
+
+        drawChart("chart-trend", {
+            type: "line",
+            data: { labels: monthly.map(m => m.month), datasets: [{
+                label: "km/L", data: monthly.map(m => m.fulltank_mileage),
+                borderColor: "#146b67", backgroundColor: "rgba(20,107,103,0.12)",
+                fill: true, tension: 0.35, spanGaps: true,
+                pointRadius: 5, pointBackgroundColor: "#fff", pointBorderWidth: 2 }] },
+            options: { maintainAspectRatio: false, scales: { y: { beginAtZero: false }, x: { grid: { display: false } } } },
+        });
+    }
+
+    function renderAdminOverview() {
+        $("user-dashboard").hidden = true;
+        $("admin-overview").hidden = false;
+        $("dash-title").textContent = "Admin overview";
+        $("dash-sub").textContent = "Every account and its fuel data. Pick a user to explore their dashboard, or edit any account.";
+
+        const sum = key => state.users.reduce((total, u) => total + Number(u[key] || 0), 0);
+        $("admin-stats").innerHTML = statCards([
+            ["👥", "Accounts", state.users.length, "tone-navy"],
+            ["🚗", "Vehicles", sum("total_vehicles"), "tone-teal"],
+            ["🧾", "Fuel records", sum("total_records"), "tone-blue"],
+            ["💰", "Total spend", money(sum("total_cost")), "tone-amber"],
+        ]);
+
+        $("user-cards").innerHTML = state.users.map(userCardHtml).join("") ||
+            '<div class="empty-state">No accounts yet.</div>';
+
+        drawChart("chart-users", {
+            type: "bar",
+            data: { labels: state.users.map(u => u.username), datasets: [{
+                label: "Spend (₹)", data: state.users.map(u => u.total_cost),
+                backgroundColor: state.users.map((_, i) => PALETTE[i % PALETTE.length]), borderRadius: 8 }] },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } },
+                       scales: { y: { beginAtZero: true, grid: { color: "#eef3f6" } }, x: { grid: { display: false } } } },
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // Vehicles
+    // ------------------------------------------------------------------
+    async function loadVehicles() {
+        const vehicles = await api(scoped("/api/vehicles"));
+        state.cache.vehicles = Object.fromEntries(vehicles.map(v => [v.vehicle_id, v]));
+
+        $("vehicle-grid").innerHTML = vehicles.map(v => `
+            <article class="vehicle-card">
+                <div class="vehicle-icon">${VEHICLE_ICONS[v.vehicle_type] || "🚙"}</div>
+                <div class="vehicle-info">
+                    <h4>${esc(v.vehicle_code)}</h4>
+                    <p>${esc(v.vehicle_type)} · <span class="fuel-tag">${esc(v.fuel_type)}</span></p>
+                    <small class="admin-only">Owner: ${esc(v.owner_name)}</small>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-small" data-action="edit-vehicle" data-id="${v.vehicle_id}">Edit</button>
+                    <button class="btn-small btn-danger" data-action="delete-vehicle" data-id="${v.vehicle_id}">Delete</button>
+                </div>
+            </article>`).join("") ||
+            '<div class="empty-state">No vehicles yet. Add your first vehicle above.</div>';
+
+        populateOwnerSelect();
+    }
+
+    $("vehicle-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        const body = {
+            vehicle_code: $("vehicle-code").value.trim(),
+            vehicle_type: $("vehicle-type").value,
+            fuel_type: $("fuel-type").value,
+        };
+        if (isAdmin()) body.owner_id = Number($("vehicle-owner").value);
+        try {
+            await api("/api/vehicles", { method: "POST", body: JSON.stringify(body) });
+            event.target.reset();
+            populateOwnerSelect();
+            showMessage("Vehicle added successfully.");
+            refresh();
+        } catch (err) {
+            showMessage(err.message, true);
+        }
+    });
+
+    function editVehicle(id) {
+        const v = state.cache.vehicles[id];
+        if (!v) return;
+        openEditDialog("Edit vehicle", [
+            { name: "vehicle_code", label: "Vehicle code", value: v.vehicle_code, required: true, maxlength: 30 },
+            { name: "vehicle_type", label: "Type", type: "select", options: VEHICLE_TYPES, value: v.vehicle_type },
+            { name: "fuel_type", label: "Fuel", type: "select", options: FUEL_TYPES, value: v.fuel_type },
+        ], values => saveChange(`/api/vehicles/${id}`, "PUT", {
+            vehicle_code: values.vehicle_code.trim(),
+            vehicle_type: values.vehicle_type,
+            fuel_type: values.fuel_type,
+        }, "Vehicle updated."));
+    }
+
+    // ------------------------------------------------------------------
+    // Fuel records
+    // ------------------------------------------------------------------
+    function setToday() {
+        $("fill-date").value = new Date().toLocaleDateString("en-CA");
+    }
+
+    async function loadRecords() {
+        const [records, vehicles] = await Promise.all([
+            api(scoped("/api/fuel-records")),
+            api(scoped("/api/vehicles")),
+        ]);
+        state.cache.records = Object.fromEntries(records.map(r => [r.record_id, r]));
+
+        const select = $("record-vehicle");
+        const previous = select.value;
+        select.innerHTML = '<option value="">Select vehicle</option>' + vehicles.map(v =>
+            `<option value="${v.vehicle_id}">${isAdmin() ? esc(v.owner_name) + " · " : ""}${esc(v.vehicle_code)} (${esc(v.fuel_type)})</option>`
+        ).join("");
+        if (vehicles.some(v => String(v.vehicle_id) === previous)) select.value = previous;
+
+        $("fuel-list").innerHTML = records.map(r => `
+            <tr class="${r.status === "invalid" ? "row-invalid" : ""}">
+                <td>${esc(r.fill_date)}</td>
+                <td class="admin-only">${esc(r.owner_name)}</td>
+                <td>${esc(r.vehicle_code)}</td>
+                <td>${num(r.odometer_km)} km</td>
+                <td>${num(r.litres, 3)} L</td>
+                <td>${money(r.total_cost)}</td>
+                <td>${r.full_tank_flag ? '<span class="badge badge-full">Full</span>' : '<span class="badge badge-approx">Partial</span>'}</td>
+                <td>${r.distance == null ? "—" : num(r.distance) + " km"}</td>
+                <td>${r.mileage == null ? "—" : "<strong>" + num(r.mileage) + "</strong> km/L"}</td>
+                <td>${basisBadge(r.basis)}</td>
+                <td>${r.status === "invalid"
+                    ? `<span class="badge badge-invalid" title="${esc(r.reason)}">Invalid</span>`
+                    : '<span class="badge badge-full">Valid</span>'}</td>
+                <td class="actions">
+                    <button class="btn-small" data-action="edit-record" data-id="${r.record_id}">Edit</button>
+                    <button class="btn-small btn-danger" data-action="delete-record" data-id="${r.record_id}">Delete</button>
+                </td>
+            </tr>`).join("") || '<tr><td colspan="12" class="empty-cell">No fuel records yet.</td></tr>';
+    }
+
+    $("record-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        try {
+            await api("/api/fuel-records", {
+                method: "POST",
+                body: JSON.stringify({
+                    vehicle_id: $("record-vehicle").value,
+                    fill_date: $("fill-date").value,
+                    odometer_km: $("odometer").value,
+                    litres: $("litres").value,
+                    total_cost: $("total-cost").value,
+                    full_tank_flag: $("full-tank").checked,
+                }),
+            });
+            event.target.reset();
+            setToday();
+            $("full-tank").checked = true;
+            showMessage("Fuel record added successfully.");
+            refresh();
+        } catch (err) {
+            showMessage(err.message, true);
+        }
+    });
+
+    function editRecord(id) {
+        const r = state.cache.records[id];
+        if (!r) return;
+        openEditDialog("Edit fuel record", [
+            { name: "fill_date", label: "Fill date", type: "date", value: r.fill_date, required: true },
+            { name: "odometer_km", label: "Odometer (km)", type: "number", value: r.odometer_km, step: "0.01", min: "0", required: true },
+            { name: "litres", label: "Litres", type: "number", value: r.litres, step: "0.001", min: "0.001", required: true },
+            { name: "total_cost", label: "Total cost (₹)", type: "number", value: r.total_cost, step: "0.01", min: "0", required: true },
+            { name: "full_tank_flag", label: "Tank filled to full", type: "checkbox", value: Boolean(r.full_tank_flag) },
+        ], values => saveChange(`/api/fuel-records/${id}`, "PUT", {
+            fill_date: values.fill_date,
+            odometer_km: values.odometer_km,
+            litres: values.litres,
+            total_cost: values.total_cost,
+            full_tank_flag: values.full_tank_flag,
+        }, "Fuel record updated."));
+    }
+
+    // ------------------------------------------------------------------
+    // Analytics
+    // ------------------------------------------------------------------
+    async function loadAnalytics() {
+        const needsUser = isAdminOverview();
+        $("analytics-empty").hidden = !needsUser;
+        $("analytics-body").hidden = needsUser;
+        if (needsUser) return;
+
+        document.querySelectorAll("[data-export]").forEach(link =>
+            link.setAttribute("href", scoped(`/api/export/${link.dataset.export}.csv`)));
+
+        const data = await api(scoped("/api/analytics"));
+        const t = data.totals;
+
+        $("analytics-distance").textContent = num(t.total_distance) + " km";
+        $("analytics-mileage").textContent = orNA(t.fulltank_mileage, num, " km/L");
+        $("analytics-approx").textContent = orNA(t.approx_mileage, num, " km/L");
+        $("analytics-cost-km").textContent = orNA(t.fulltank_cost_per_km, money);
+
+        $("vehicle-analytics").innerHTML = data.vehicles.map(v => `
+            <tr>
+                <td>${v.rank ?? "—"}</td>
+                <td>${esc(v.vehicle_code)}</td>
+                <td>${esc(v.fuel_type)}</td>
+                <td>${v.fulltank_segments}</td>
+                <td>${orNA(v.fulltank_mileage)}</td>
+                <td>${orNA(v.fulltank_cost_per_km, money)}</td>
+                <td>${orNA(v.approx_mileage)}</td>
+                <td>${orNA(v.approx_cost_per_km, money)}</td>
+                <td>${v.invalid_records}</td>
+            </tr>`).join("") || '<tr><td colspan="9" class="empty-cell">No data available.</td></tr>';
+
+        $("expense-analytics").innerHTML = data.vehicles.map(v => `
+            <tr>
+                <td>${esc(v.vehicle_code)}</td><td>${v.records}</td>
+                <td>${num(v.total_litres)}</td><td>${money(v.total_cost)}</td>
+                <td>${orNA(v.avg_price_per_litre, money)}</td><td>${num(v.fulltank_distance)}</td>
+            </tr>`).join("") +
+            `<tr class="total-row"><td>All vehicles</td><td>${t.total_records}</td>
+                <td>${num(t.total_litres)}</td><td>${money(t.total_cost)}</td>
+                <td>${orNA(t.avg_price_per_litre, money)}</td><td>${num(t.fulltank_distance)}</td></tr>`;
+
+        $("monthly-analytics").innerHTML = data.monthly.map(m => `
+            <tr>
+                <td>${esc(m.month)}</td><td>${m.records}</td>
+                <td>${num(m.total_litres)}</td><td>${money(m.total_cost)}</td>
+                <td>${orNA(m.avg_price_per_litre, money)}</td>
+                <td>${orNA(m.fulltank_mileage)}</td>
+                <td>${orNA(m.fulltank_cost_per_km, money)}</td>
+                <td>${orNA(m.approx_mileage)}</td>
+            </tr>`).join("") || '<tr><td colspan="8" class="empty-cell">No monthly data available.</td></tr>';
+
+        const pivot = data.monthly_vehicle_mileage;
+        $("pivot-head").innerHTML = "<tr><th>Month</th>" + pivot.vehicles.map(c => `<th>${esc(c)}</th>`).join("") + "</tr>";
+        $("pivot-body").innerHTML = pivot.months.map((month, i) =>
+            `<tr><td>${esc(month)}</td>${pivot.values[i].map(v => `<td>${orNA(v)}</td>`).join("")}</tr>`
+        ).join("") || '<tr><td class="empty-cell">No data available.</td></tr>';
+
+        $("segment-list").innerHTML = data.segments.map(s => `
+            <tr>
+                <td>${esc(s.vehicle_code)}</td><td>${esc(s.start_date)}</td><td>${esc(s.end_date)}</td>
+                <td>${num(s.distance)}</td><td>${num(s.litres)}</td>
+                <td>${s.partial_fills}</td><td>${orNA(s.mileage)}</td>
+                <td>${orNA(s.cost_per_km, money)}</td>
+            </tr>`).join("") ||
+            '<tr><td colspan="8" class="empty-cell">No complete full-tank segments yet. Two full-tank fills are needed.</td></tr>';
+
+        const charts = await api(scoped("/api/analytics/charts"));
+        $("charts").innerHTML = CHART_CARDS.map(([key, title, wide]) => `
+            <figure class="chart-tile ${wide ? "wide" : ""}">
+                <figcaption>${esc(title)}</figcaption>
+                <img alt="${esc(title)} chart" src="data:image/png;base64,${charts[key]}">
+            </figure>`).join("");
+    }
+
+    // ------------------------------------------------------------------
+    // Invalid readings
+    // ------------------------------------------------------------------
+    async function loadInvalid() {
+        const rows = await api(scoped("/api/invalid-readings"));
+        setBadge(rows.length);
+        document.querySelectorAll("[data-export='invalid-readings']").forEach(link =>
+            link.setAttribute("href", scoped("/api/export/invalid-readings.csv")));
+
+        rows.forEach(r => {
+            state.cache.records[r.record_id] = { ...r, full_tank_flag: r.full_tank ? 1 : 0 };
+        });
+
+        $("invalid-list").innerHTML = rows.map(r => `
+            <tr>
+                <td class="admin-only">${esc(r.owner)}</td>
+                <td>${esc(r.vehicle_code)}</td>
+                <td>${esc(r.fill_date)}</td>
+                <td>${num(r.odometer_km)} km</td>
+                <td>${num(r.litres, 3)} L</td>
+                <td>${money(r.total_cost)}</td>
+                <td>${r.full_tank ? "Full" : "Partial"}</td>
+                <td class="wrap">${esc(r.reason)}</td>
+                <td class="actions">
+                    <button class="btn-small" data-action="edit-record" data-id="${r.record_id}">Fix</button>
+                    <button class="btn-small btn-danger" data-action="delete-record" data-id="${r.record_id}">Delete</button>
+                </td>
+            </tr>`).join("") || '<tr><td colspan="9" class="empty-cell">No invalid readings found. 🎉</td></tr>';
+    }
+
+    // ------------------------------------------------------------------
+    // Edit dialog and save helpers
+    // ------------------------------------------------------------------
+    function openEditDialog(title, fields, onSave) {
+        $("edit-title").textContent = title;
+        $("edit-fields").innerHTML = fields.map(f => {
+            const id = "ef-" + f.name;
+            if (f.type === "checkbox") {
+                return `<label class="checkbox-label span-2"><input type="checkbox" id="${id}" ${f.value ? "checked" : ""}> ${esc(f.label)}</label>`;
+            }
+            if (f.type === "select") {
+                const options = [...f.options];
+                if (f.value && !options.includes(f.value)) options.unshift(f.value);
+                return `<div class="field span-2"><label for="${id}">${esc(f.label)}</label>
+                    <select id="${id}" ${f.disabled ? "disabled" : ""}>
+                        ${options.map(o => `<option ${o === f.value ? "selected" : ""}>${esc(o)}</option>`).join("")}
+                    </select></div>`;
+            }
+            return `<div class="field span-2"><label for="${id}">${esc(f.label)}</label>
+                <input id="${id}" type="${f.type || "text"}" value="${esc(f.value ?? "")}"
+                    ${f.step ? `step="${f.step}"` : ""} ${f.min ? `min="${f.min}"` : ""}
+                    ${f.maxlength ? `maxlength="${f.maxlength}"` : ""} ${f.required ? "required" : ""}
+                    autocomplete="off"></div>`;
+        }).join("");
+        setFormError("edit-error", "");
+        editSave = onSave;
+        $("edit-dialog").showModal();
+    }
+
+    $("edit-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        const values = {};
+        $("edit-fields").querySelectorAll("input, select").forEach(input => {
+            values[input.id.slice(3)] = input.type === "checkbox" ? input.checked : input.value;
+        });
+        setFormError("edit-error", "");
+        try {
+            await editSave(values);
+        } catch (err) {
+            setFormError("edit-error", err.message);
+        }
+    });
+
+    async function saveChange(url, method, body, fallbackText) {
+        const data = await api(url, { method, body: JSON.stringify(body) });
+        $("edit-dialog").close();
+        showMessage(data.message || fallbackText);
+        await refresh();
+    }
+
+    async function deleteItem(url, label, afterwards) {
+        if (!confirm(`Delete this ${label}? This cannot be undone.`)) return;
+        try {
+            const data = await api(url, { method: "DELETE" });
+            showMessage(data.message);
+            await afterwards();
+        } catch (err) {
+            showMessage(err.message, true);
+        }
+    }
+
+    // One delegated handler for every button in the app, so no data is put into inline handlers.
+    document.addEventListener("click", event => {
+        const button = event.target.closest("[data-action]");
+        if (!button) return;
+        const id = Number(button.dataset.id);
+        const actions = {
+            "view-user": () => { state.scope = id; renderScopeSelect(); showPage("dashboard"); },
+            "edit-user": () => editAccount(id),
+            "delete-user": () => deleteUserAccount(id),
+            "edit-vehicle": () => editVehicle(id),
+            "delete-vehicle": () => deleteItem(`/api/vehicles/${id}`, "vehicle", refresh),
+            "edit-record": () => editRecord(id),
+            "delete-record": () => deleteItem(`/api/fuel-records/${id}`, "fuel record", refresh),
+        };
+        if (actions[button.dataset.action]) actions[button.dataset.action]();
+    });
+
+    // ------------------------------------------------------------------
+    // Start
+    // ------------------------------------------------------------------
+    if (window.Chart) {
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        Chart.defaults.color = "#526575";
+    }
+    setToday();
+
+    (async function init() {
+        try {
+            const { user } = await api("/api/auth/me");
+            if (user) enterApp(user);
+            else showView("landing");
+        } catch (_) {
+            showView("landing");
+        }
+    })();
+</script>
+</body>
+</html>
