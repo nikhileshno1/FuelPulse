@@ -489,9 +489,9 @@ def user_overview():
             COUNT(DISTINCT v.vehicle_id) AS total_vehicles,
             COUNT(DISTINCT fr.record_id) AS total_records,
             COALESCE(SUM(fr.litres), 0) AS total_litres,
-            COALESCE(SUM(fr.cost), 0) AS total_cost
+            COALESCE(SUM(fr.total_cost), 0) AS total_cost
         FROM users u
-        LEFT JOIN vehicles v ON v.user_id = u.user_id
+        LEFT JOIN vehicles v ON v.owner_id = u.user_id
         LEFT JOIN fuel_records fr ON fr.vehicle_id = v.vehicle_id
         GROUP BY u.user_id, u.username, u.role, u.created_at
         ORDER BY u.user_id
