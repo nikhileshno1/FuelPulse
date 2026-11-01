@@ -479,22 +479,39 @@ def calculate_analytics(owner_id=None):
 
 
 def user_overview():
-    """One summary row per account, used by the admin overview and user table."""
+    """Return a lightweight summary of all user accounts."""
+    users = query("""
+        SELECT
+            u.user_id,
+            u.username,
+            u.role,
+            u.created_at,
+            COUNT(DISTINCT v.vehicle_id) AS total_vehicles,
+            COUNT(DISTINCT fr.record_id) AS total_records,
+            COALESCE(SUM(fr.litres), 0) AS total_litres,
+            COALESCE(SUM(fr.cost), 0) AS total_cost
+        FROM users u
+        LEFT JOIN vehicles v ON v.user_id = u.user_id
+        LEFT JOIN fuel_records fr ON fr.vehicle_id = v.vehicle_id
+        GROUP BY u.user_id, u.username, u.role, u.created_at
+        ORDER BY u.user_id
+    """)
+
     result = []
-    for user in query("SELECT user_id, username, role, created_at FROM users ORDER BY user_id"):
-        totals = calculate_analytics(user["user_id"])["totals"]
+    for user in users:
         result.append({
             "user_id": user["user_id"],
             "username": user["username"],
             "role": user["role"],
             "created_at": str(user["created_at"]),
-            "total_vehicles": totals["total_vehicles"],
-            "total_records": totals["total_records"],
-            "total_litres": totals["total_litres"],
-            "total_cost": totals["total_cost"],
-            "fulltank_mileage": totals["fulltank_mileage"],
-            "invalid_records": totals["invalid_records"],
+            "total_vehicles": user["total_vehicles"],
+            "total_records": user["total_records"],
+            "total_litres": float(user["total_litres"]),
+            "total_cost": float(user["total_cost"]),
+            "fulltank_mileage": 0,
+            "invalid_records": 0,
         })
+
     return result
 
 
