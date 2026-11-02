@@ -1246,9 +1246,12 @@ def ensure_admin():
         print(f"'{username}' already exists as a normal user. Choose another ADMIN_USERNAME.")
 
 
+try:
+    ensure_admin()
+except Exception as error:
+    print(f"Startup database check: {error}")
+
+
 if __name__ == "__main__":
-    try:
-        ensure_admin()
-    except mysql.connector.Error as error:
-        print(f"Could not reach the database: {error}")
-    app.run(debug=True, port=5001)
+    port = int(os.getenv("PORT", 5001))
+    app.run(debug=True, port=port)
