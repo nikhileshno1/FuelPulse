@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fuel Consumption Analysis System</title>
+    <title>FuelPulse · Smart Fuel & Mileage Tracker</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script>
+        (function() {
+            var theme = localStorage.getItem("fuelpulse_theme") || "light";
+            document.documentElement.setAttribute("data-theme", theme);
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 </head>
 <body>
@@ -12,98 +18,683 @@
 <!-- ============================ LANDING ============================ -->
 <div id="landing" class="view">
     <header class="topbar">
-        <div class="brand"><span class="brand-mark">⛽</span><span>Fuel Consumption Analysis</span></div>
-        <button class="btn-ghost on-dark" data-open-auth="login">Sign In</button>
+        <div class="brand"><span class="brand-mark">⛽</span><span>FuelPulse</span></div>
+        <nav class="landing-nav">
+            <a href="#hero">🏠 Home</a>
+            <a href="#app-pages">📑 Pages</a>
+            <a href="#landing-dashboard">📊 Dashboard</a>
+            <a href="#landing-showcase">🔍 Interactive Tour</a>
+            <a href="#landing-modules">⚡ Features</a>
+            <a href="#landing-faq">❓ FAQ</a>
+        </nav>
+        <div class="top-right">
+            <button class="theme-toggle" data-action="toggle-theme" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">
+                <span class="theme-icon">🌙</span> <span class="theme-text">Dark</span>
+            </button>
+            <button class="btn-ghost on-dark sm" data-open-auth="login">Sign In</button>
+            <button class="btn-primary sm" data-open-auth="signup" style="padding:7px 16px; font-size:13px; border-radius:999px;">Get Started</button>
+        </div>
     </header>
 
-    <section class="hero">
+    <section class="hero" id="hero">
         <div class="hero-text">
             <span class="eyebrow">Smart fuel tracking for cars, bikes, trucks and buses</span>
             <h1>Know exactly what every kilometre <span class="grad">really costs</span> you.</h1>
-            <p>Log each fill-up and the system works out true fuel efficiency, monthly spending and cost per kilometre.
-                It separates accurate full-tank figures from rough estimates, catches impossible odometer readings,
-                and turns your records into clear charts.</p>
+            <p>Log each fill-up with smart rate auto-calculation, track real tank-to-tank fuel economy, and uncover monthly cost trends with interactive visual analytics.</p>
             <div class="hero-actions">
                 <button class="btn-primary lg" data-open-auth="signup">Create free account</button>
                 <button class="btn-ghost lg" data-open-auth="login">Sign in to your dashboard</button>
+                <a href="#landing-dashboard" class="btn-ghost lg" style="text-decoration:none;">View Live Dashboard ↓</a>
             </div>
             <ul class="hero-points">
-                <li>✔ Accurate full-tank mileage</li>
-                <li>✔ Private data for every user</li>
-                <li>✔ Admin control panel</li>
+                <li>✔ True tank-to-tank mileage</li>
+                <li>✔ Instant 3-way fuel calculator</li>
+                <li>✔ Multi-vehicle & private accounts</li>
             </ul>
         </div>
 
         <div class="hero-preview" aria-hidden="true">
-            <div class="preview-head"><span>Sample preview</span><span class="badge badge-full">Full-tank</span></div>
+            <div class="preview-head"><span>Live Efficiency Preview</span><span class="badge badge-full">Full-tank Verified</span></div>
             <div class="preview-grid">
-                <div><small>Mileage</small><strong>16.4 km/L</strong></div>
-                <div><small>Cost per km</small><strong>₹5.82</strong></div>
-                <div><small>Monthly spend</small><strong>₹3,391</strong></div>
+                <div><small>Mileage</small><strong>16.8 km/L</strong></div>
+                <div><small>Cost per km</small><strong>₹5.65</strong></div>
+                <div><small>Monthly spend</small><strong>₹4,250</strong></div>
                 <div><small>Vehicles</small><strong>2 cars · 1 bike</strong></div>
             </div>
             <div class="preview-bars">
-                <span style="height:55%"></span><span style="height:70%"></span><span style="height:62%"></span>
-                <span style="height:85%"></span><span style="height:74%"></span><span style="height:92%"></span>
+                <span style="height:55%"></span><span style="height:72%"></span><span style="height:64%"></span>
+                <span style="height:88%"></span><span style="height:76%"></span><span style="height:95%"></span>
             </div>
         </div>
     </section>
 
+    <!-- ==================== WHAT'S IN THE APP: PAGES DIRECTORY ==================== -->
+    <section class="section" id="app-pages" style="background:var(--card-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+        <div class="section-title">
+            <span class="eyebrow">Application Structure</span>
+            <h2>What Pages Are Inside FuelPulse?</h2>
+            <p style="color:var(--muted); max-width:640px; margin: 8px auto 0;">Here is the complete map of every page and section you can access inside the web application.</p>
+        </div>
+
+        <div class="pages-map-grid">
+            <!-- Page 1: Home -->
+            <article class="page-map-card">
+                <div>
+                    <div class="page-map-header">
+                        <div class="page-map-title"><span>🏠</span> Home Portal</div>
+                        <span class="page-map-badge">Route: /</span>
+                    </div>
+                    <p>The public welcome page with interactive feature demonstrations, formula breakdowns, calculations guide, and direct sign-in access.</p>
+                </div>
+                <ul class="page-map-features">
+                    <li>Interactive live dashboard preview</li>
+                    <li>Tank-to-tank vs approximate calculations guide</li>
+                    <li>Frequently asked questions & CSV export definitions</li>
+                </ul>
+            </article>
+
+            <!-- Page 2: Dashboard -->
+            <article class="page-map-card" style="border-top:3px solid var(--teal);">
+                <div>
+                    <div class="page-map-header">
+                        <div class="page-map-title"><span>📊</span> Dashboard</div>
+                        <span class="page-map-badge">Tab: Dashboard</span>
+                    </div>
+                    <p>Your central mission control displaying your entire fuel profile, real-time KPIs, spending distribution, and latest fill-up history.</p>
+                </div>
+                <ul class="page-map-features">
+                    <li>8 Real-time KPI Stat Cards (Mileage, Cost/km, Spend, etc.)</li>
+                    <li>4 Visual Chart.js interactive vector charts</li>
+                    <li>Recent fill-ups quick activity feed</li>
+                </ul>
+            </article>
+
+            <!-- Page 3: Vehicles -->
+            <article class="page-map-card">
+                <div>
+                    <div class="page-map-header">
+                        <div class="page-map-title"><span>🚗</span> Vehicles (Garage)</div>
+                        <span class="page-map-badge">Tab: Vehicles</span>
+                    </div>
+                    <p>Register and manage your motorized vehicles. Support for multiple vehicles with individual lifetime totals and performance records.</p>
+                </div>
+                <ul class="page-map-features">
+                    <li>Vehicle types: Car, Bike, Truck, Bus, and Other</li>
+                    <li>Fuel types: Petrol, Diesel, CNG, Electric, Hybrid</li>
+                    <li>Vehicle code customization (e.g. CAR001, BIKE01)</li>
+                </ul>
+            </article>
+
+            <!-- Page 4: Fuel Logs -->
+            <article class="page-map-card" style="border-top:3px solid var(--amber);">
+                <div>
+                    <div class="page-map-header">
+                        <div class="page-map-title"><span>⛽</span> Fuel Logs</div>
+                        <span class="page-map-badge">Tab: Fuel Logs</span>
+                    </div>
+                    <p>Log each fill-up with smart rate auto-calculation, live previous odometer comparison, and complete historical table with editing tools.</p>
+                </div>
+                <ul class="page-map-features">
+                    <li>3-Way rate calculator (Rate × Litres = Cost)</li>
+                    <li>Previous odometer prompt with live distance driven</li>
+                    <li>Full-tank verified vs partial fill toggle</li>
+                </ul>
+            </article>
+
+            <!-- Page 5: Analytics -->
+            <article class="page-map-card" style="border-top:3px solid var(--purple);">
+                <div>
+                    <div class="page-map-header">
+                        <div class="page-map-title"><span>📈</span> Analytics & Reports</div>
+                        <span class="page-map-badge">Tab: Analytics</span>
+                    </div>
+                    <p>Deep analytical engine featuring 4 organized sub-tabs with interactive vector charts, monthly trends, and instant CSV downloads.</p>
+                </div>
+                <ul class="page-map-features">
+                    <li>Subtabs: Charts, Vehicles, Monthly, and Cycles</li>
+                    <li>Vehicle efficiency leaderboard & rank (#1, #2, #3)</li>
+                    <li>Downloadable CSV files for tax and accounting</li>
+                </ul>
+            </article>
+
+            <!-- Page 6: Flagged Entries -->
+            <article class="page-map-card">
+                <div>
+                    <div class="page-map-header">
+                        <div class="page-map-title"><span>⚠️</span> Needs Review</div>
+                        <span class="page-map-badge">Tab: Needs Review</span>
+                    </div>
+                    <p>Data quality auditor that catches out-of-order odometer readings or impossible inputs to ensure your verified statistics are never corrupted.</p>
+                </div>
+                <ul class="page-map-features">
+                    <li>Notification count badge on nav bar</li>
+                    <li>Clear reason flagged (e.g. reading lower than previous)</li>
+                    <li>1-Click inline edit and delete tools</li>
+                </ul>
+            </article>
+
+            <!-- Page 7: Admin Users -->
+            <article class="page-map-card" style="border-top:3px solid var(--navy);">
+                <div>
+                    <div class="page-map-header">
+                        <div class="page-map-title"><span>👥</span> User Accounts (Admin)</div>
+                        <span class="page-map-badge">Admin Only</span>
+                    </div>
+                    <p>Fleet management console allowing administrators to oversee all driver accounts, inspect cross-vehicle spending, and manage user roles.</p>
+                </div>
+                <ul class="page-map-features">
+                    <li>Multi-account fleet overview</li>
+                    <li>Account switcher to view any driver's private dashboard</li>
+                    <li>User role assignment (Admin vs Standard User)</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <!-- ==================== LIVE DASHBOARD PREVIEW ON LANDING PAGE ==================== -->
+    <section class="section" id="landing-dashboard" style="background:var(--bg);">
+        <div class="section-title">
+            <span class="eyebrow">Page 2 Preview</span>
+            <h2>The Executive Dashboard (Live Preview)</h2>
+            <p style="color:var(--muted); max-width:680px; margin: 8px auto 0;">This is the exact central dashboard you experience inside FuelPulse. Interactive vector charts, real-time KPIs, and activity history.</p>
+        </div>
+
+        <div style="max-width:1160px; margin:0 auto; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px; box-shadow:var(--shadow-lg);">
+            <!-- Simulated Nav Tabs -->
+            <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:22px;">
+                <button type="button" class="nav-btn active" style="font-size:14px; padding:7px 16px;">📊 Dashboard</button>
+                <button type="button" class="nav-btn" data-jump-showcase="vehicles" style="font-size:14px; padding:7px 16px;">🚗 Vehicles</button>
+                <button type="button" class="nav-btn" data-jump-showcase="logger" style="font-size:14px; padding:7px 16px;">⛽ Fuel Logs</button>
+                <button type="button" class="nav-btn" data-jump-showcase="analytics" style="font-size:14px; padding:7px 16px;">📈 Analytics</button>
+                <button type="button" class="nav-btn" data-jump-showcase="audit" style="font-size:14px; padding:7px 16px;">⚠️ Needs Review</button>
+            </div>
+
+            <!-- Dashboard 8 Stat Cards -->
+            <div class="stats-grid" style="margin-bottom:24px;">
+                <div class="stat-card tone-teal">
+                    <div class="stat-icon">🚗</div>
+                    <div><span class="stat-label">Vehicles</span><strong class="stat-value">3 Active</strong></div>
+                </div>
+                <div class="stat-card tone-amber">
+                    <div class="stat-icon">⛽</div>
+                    <div><span class="stat-label">Fuel Bought</span><strong class="stat-value">254.5 L</strong></div>
+                </div>
+                <div class="stat-card tone-blue">
+                    <div class="stat-icon">💰</div>
+                    <div><span class="stat-label">Total Spend</span><strong class="stat-value">₹26,085</strong></div>
+                </div>
+                <div class="stat-card tone-green">
+                    <div class="stat-icon">📏</div>
+                    <div><span class="stat-label">Mileage (Full-tank)</span><strong class="stat-value">16.8 km/L</strong></div>
+                </div>
+                <div class="stat-card tone-purple">
+                    <div class="stat-icon">🧮</div>
+                    <div><span class="stat-label">Cost per km</span><strong class="stat-value">₹5.65</strong></div>
+                </div>
+                <div class="stat-card tone-navy">
+                    <div class="stat-icon">📍</div>
+                    <div><span class="stat-label">Distance Covered</span><strong class="stat-value">4,280 km</strong></div>
+                </div>
+                <div class="stat-card tone-teal">
+                    <div class="stat-icon">💧</div>
+                    <div><span class="stat-label">Avg Price / Litre</span><strong class="stat-value">₹102.50</strong></div>
+                </div>
+                <div class="stat-card tone-green">
+                    <div class="stat-icon">🛡️</div>
+                    <div><span class="stat-label">Flagged Entries</span><strong class="stat-value">0 (Clean)</strong></div>
+                </div>
+            </div>
+
+            <!-- 4 Interactive Charts -->
+            <div class="dash-grid">
+                <div class="panel">
+                    <h3>Monthly Fuel Spend (₹)</h3>
+                    <div class="chart-box"><canvas id="demo-chart-spend"></canvas></div>
+                </div>
+                <div class="panel">
+                    <h3>Spend Share by Vehicle</h3>
+                    <div class="chart-box"><canvas id="demo-chart-share"></canvas></div>
+                </div>
+                <div class="panel">
+                    <h3>Mileage by Vehicle (km/L)</h3>
+                    <div class="chart-box"><canvas id="demo-chart-mileage"></canvas></div>
+                </div>
+                <div class="panel">
+                    <h3>Monthly Mileage Trend (Full-Tank km/L)</h3>
+                    <div class="chart-box"><canvas id="demo-chart-trend"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Recent Records Preview -->
+            <div class="panel-head"><h3>Recent Fuel Logs</h3></div>
+            <div class="table-wrap" style="box-shadow:none;">
+                <table>
+                    <thead><tr><th>Date</th><th>Vehicle</th><th>Litres</th><th>Total Cost</th><th>Mileage</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td>2026-11-01</td><td><strong>CAR001 (Honda City)</strong></td><td>35.5 L</td><td>₹3,638.75</td><td><strong>16.8 km/L</strong></td><td><span class="badge badge-full">Verified</span></td></tr>
+                        <tr><td>2026-10-28</td><td><strong>BIKE01 (Royal Enfield)</strong></td><td>12.0 L</td><td>₹1,230.00</td><td><strong>32.4 km/L</strong></td><td><span class="badge badge-full">Verified</span></td></tr>
+                        <tr><td>2026-10-24</td><td><strong>VAN001 (Tata Ace)</strong></td><td>45.0 L</td><td>₹4,140.00</td><td><strong>13.2 km/L</strong></td><td><span class="badge badge-full">Verified</span></td></tr>
+                        <tr><td>2026-10-18</td><td><strong>CAR001 (Honda City)</strong></td><td>34.0 L</td><td>₹3,485.00</td><td><strong>16.5 km/L</strong></td><td><span class="badge badge-full">Verified</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="text-align:center; margin-top:20px;">
+                <button class="btn-primary lg" data-open-auth="signup">Start Logging Your Vehicles Now →</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== APP SHOWCASE (LIVE WALKTHROUGH) ==================== -->
+    <section class="section" id="landing-showcase" style="padding-top: 20px;">
+        <div class="section-title">
+            <span class="eyebrow">Interactive Tour</span>
+            <h2>Explore What's Inside FuelPulse</h2>
+            <p style="color:var(--muted); max-width:620px; margin: 8px auto 0;">Click through the modules below to see the exact screens, features, and reports available inside the application.</p>
+        </div>
+
+        <div class="showcase-container">
+            <div class="showcase-nav">
+                <button class="showcase-tab active" data-showcase="dashboard">📊 Executive Dashboard</button>
+                <button class="showcase-tab" data-showcase="logger">⛽ Smart Fuel Logger</button>
+                <button class="showcase-tab" data-showcase="analytics">📈 Deep Analytics & Reports</button>
+                <button class="showcase-tab" data-showcase="vehicles">🚗 Fleet Garage</button>
+                <button class="showcase-tab" data-showcase="audit">⚠️ Anomaly Detection</button>
+            </div>
+
+            <div class="browser-mockup">
+                <div class="browser-bar">
+                    <div class="browser-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                    <div class="browser-address" id="showcase-address">fuelpulse.app/dashboard</div>
+                </div>
+
+                <div class="browser-body">
+                    <!-- Slide 1: Dashboard -->
+                    <div id="slide-dashboard" class="showcase-slide active">
+                        <div class="showcase-slide-head">
+                            <div>
+                                <h3>📊 Executive Performance Dashboard</h3>
+                                <p>Your fuel economy, spending trends, and latest activity at a glance.</p>
+                            </div>
+                            <span class="badge badge-full">Live Interactive View</span>
+                        </div>
+                        <div class="mini-stat-grid">
+                            <div class="mini-stat" style="border-top:3px solid var(--teal);"><small>Mileage (Full-Tank)</small><strong>16.8 km/L</strong></div>
+                            <div class="mini-stat" style="border-top:3px solid var(--purple);"><small>Running Cost</small><strong>₹5.65 / km</strong></div>
+                            <div class="mini-stat" style="border-top:3px solid var(--amber);"><small>Monthly Spend</small><strong>₹4,250</strong></div>
+                            <div class="mini-stat" style="border-top:3px solid var(--blue);"><small>Distance Logged</small><strong>1,840 km</strong></div>
+                        </div>
+                        <div class="mini-chart-grid">
+                            <div class="mini-chart-card">
+                                <h4>Monthly Fuel Expense Trend (₹)</h4>
+                                <div style="display:flex; align-items:flex-end; gap:12px; height:120px; padding-top:14px; border-bottom:1px solid var(--line);">
+                                    <div style="flex:1; background:var(--mint-soft); height:55%; border-radius:6px 6px 0 0; text-align:center; font-size:11px; font-weight:700; color:var(--teal);">₹3,200<br><small style="color:var(--muted)">Aug</small></div>
+                                    <div style="flex:1; background:var(--mint-soft); height:75%; border-radius:6px 6px 0 0; text-align:center; font-size:11px; font-weight:700; color:var(--teal);">₹4,100<br><small style="color:var(--muted)">Sep</small></div>
+                                    <div style="flex:1; background:var(--teal); height:85%; border-radius:6px 6px 0 0; text-align:center; font-size:11px; font-weight:700; color:#fff;">₹4,250<br><small style="color:var(--muted)">Oct</small></div>
+                                </div>
+                            </div>
+                            <div class="mini-chart-card">
+                                <h4>Vehicle Spend Share</h4>
+                                <div style="display:flex; align-items:center; gap:16px; height:120px;">
+                                    <div style="width:85px; height:85px; border-radius:50%; background:conic-gradient(var(--teal) 0% 65%, var(--amber) 65% 90%, var(--blue) 90% 100%);"></div>
+                                    <div style="font-size:12px; display:grid; gap:4px;">
+                                        <div><span style="color:var(--teal)">■</span> Honda City (65%)</div>
+                                        <div><span style="color:var(--amber)">■</span> Tata Ace (25%)</div>
+                                        <div><span style="color:var(--blue)">■</span> Enfield Bike (10%)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: Smart Fuel Logger -->
+                    <div id="slide-logger" class="showcase-slide">
+                        <div class="showcase-slide-head">
+                            <div>
+                                <h3>⛽ Smart Fuel Fill-up Logger</h3>
+                                <p>Effortless data entry with 3-way pump rate calculation and live odometer guidance.</p>
+                            </div>
+                            <span class="badge badge-approx">Fast Entry Form</span>
+                        </div>
+                        <div class="panel form-grid" style="box-shadow:none; border:1px solid var(--line); margin:0; padding:18px;">
+                            <div class="field span-2">
+                                <label>Vehicle Selected</label>
+                                <div style="padding:10px 14px; background:var(--card); border:1px solid var(--teal); border-radius:8px; font-weight:600; color:var(--navy);">
+                                    🚗 CAR001 · Honda City (Petrol)
+                                </div>
+                                <div class="odo-helper" style="display:flex;">
+                                    <span>📍 Previous reading: <strong>45,210 km</strong> on 2026-10-28</span>
+                                    <span class="odo-delta positive">+340.0 km driven</span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>New Odometer (km)</label>
+                                <input type="text" value="45550" readonly style="background:var(--card-2); font-weight:700; color:var(--teal-dark);">
+                            </div>
+                            <div class="field">
+                                <label>Fuel Rate (₹/L) <small style="color:var(--teal); font-weight:600;">(Auto-computed)</small></label>
+                                <input type="text" value="102.50" readonly style="background:var(--card-2);">
+                            </div>
+                            <div class="field">
+                                <label>Litres Purchased</label>
+                                <input type="text" value="35.500 L" readonly style="background:var(--card-2);">
+                            </div>
+                            <div class="field">
+                                <label>Total Cost (₹)</label>
+                                <input type="text" value="₹3,638.75" readonly style="background:var(--card-2); font-weight:700;">
+                            </div>
+                            <div class="field span-2">
+                                <label class="checkbox-label"><input type="checkbox" checked disabled> <span>Tank filled to full / auto-cut <small style="display:block; font-weight:normal; color:var(--muted);">Qualifies for true tank-to-tank verified mileage calculation.</small></span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Analytics & Reports -->
+                    <div id="slide-analytics" class="showcase-slide">
+                        <div class="showcase-slide-head">
+                            <div>
+                                <h3>📈 Deep Analytics & 1-Click CSV Exports</h3>
+                                <p>Audited performance metrics, vehicle rankings, and comprehensive accounting exports.</p>
+                            </div>
+                            <div style="display:flex; gap:6px;">
+                                <span class="btn-small">Vehicle CSV</span>
+                                <span class="btn-small">Monthly CSV</span>
+                            </div>
+                        </div>
+                        <div class="table-wrap" style="box-shadow:none; margin:0;">
+                            <table>
+                                <thead>
+                                    <tr><th>Rank</th><th>Vehicle Code</th><th>Fuel Type</th><th>Full-Tank Verified</th><th>Fuel Cost/km</th><th>Approx. Est.</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>🥇 #1</td><td><strong>CAR001 (Honda City)</strong></td><td>Petrol</td><td><strong style="color:var(--teal);">16.8 km/L</strong></td><td>₹5.65 / km</td><td>16.2 km/L</td></tr>
+                                    <tr><td>🥈 #2</td><td><strong>BIKE01 (Enfield)</strong></td><td>Petrol</td><td><strong style="color:var(--teal);">32.4 km/L</strong></td><td>₹3.15 / km</td><td>31.8 km/L</td></tr>
+                                    <tr><td>🥉 #3</td><td><strong>VAN001 (Tata Ace)</strong></td><td>Diesel</td><td><strong style="color:var(--teal);">13.2 km/L</strong></td><td>₹6.90 / km</td><td>12.8 km/L</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4: Fleet Garage -->
+                    <div id="slide-vehicles" class="showcase-slide">
+                        <div class="showcase-slide-head">
+                            <div>
+                                <h3>🚗 Garage & Fleet Asset Management</h3>
+                                <p>Manage your entire fleet across cars, bikes, trucks, buses, and fuel configurations.</p>
+                            </div>
+                            <span class="badge badge-full">Multi-Vehicle</span>
+                        </div>
+                        <div class="vehicle-grid" style="grid-template-columns:repeat(3, 1fr); margin:0;">
+                            <article class="vehicle-card" style="box-shadow:none;">
+                                <div class="vehicle-icon">🚗</div>
+                                <div class="vehicle-info">
+                                    <h4>CAR001</h4>
+                                    <p>Car · <span class="fuel-tag">Petrol</span></p>
+                                    <small style="color:var(--teal); font-weight:600;">Mileage: 16.8 km/L</small>
+                                </div>
+                            </article>
+                            <article class="vehicle-card" style="box-shadow:none;">
+                                <div class="vehicle-icon">🏍️</div>
+                                <div class="vehicle-info">
+                                    <h4>BIKE01</h4>
+                                    <p>Bike · <span class="fuel-tag">Petrol</span></p>
+                                    <small style="color:var(--teal); font-weight:600;">Mileage: 32.4 km/L</small>
+                                </div>
+                            </article>
+                            <article class="vehicle-card" style="box-shadow:none;">
+                                <div class="vehicle-icon">🚚</div>
+                                <div class="vehicle-info">
+                                    <h4>VAN001</h4>
+                                    <p>Truck · <span class="fuel-tag">Diesel</span></p>
+                                    <small style="color:var(--teal); font-weight:600;">Mileage: 13.2 km/L</small>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5: Anomaly Audit -->
+                    <div id="slide-audit" class="showcase-slide">
+                        <div class="showcase-slide-head">
+                            <div>
+                                <h3>⚠️ Intelligent Anomaly Detection (Needs Review)</h3>
+                                <p>Safeguards your statistics by isolating out-of-order odometer readings or invalid logs.</p>
+                            </div>
+                            <span class="badge badge-invalid">Integrity Guard</span>
+                        </div>
+                        <div class="table-wrap" style="box-shadow:none; margin:0;">
+                            <table>
+                                <thead>
+                                    <tr><th>Vehicle</th><th>Date</th><th>Entered Odometer</th><th>Litres</th><th>Reason Flagged</th><th>Action</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="row-invalid">
+                                        <td><strong>CAR001</strong></td>
+                                        <td>2026-10-25</td>
+                                        <td>44,900 km</td>
+                                        <td>30.0 L</td>
+                                        <td class="wrap"><span class="badge badge-invalid">Odometer 44,900 km is lower than previous reading (45,210 km)</span></td>
+                                        <td class="actions"><span class="btn-small">Fix</span><span class="btn-small btn-danger">Delete</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p style="font-size:13px; color:var(--muted); margin-top:14px; background:var(--mint-soft); padding:10px 14px; border-radius:8px;">
+                            🛡️ <strong>Why this matters:</strong> Unlike simple spreadsheet trackers, FuelPulse stops human typos from poisoning your long-term fuel efficiency curves.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== WHAT'S INSIDE: MODULES DIRECTORY ==================== -->
+    <section class="section" id="landing-modules" style="background:var(--card-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+        <div class="section-title">
+            <span class="eyebrow">Application Directory</span>
+            <h2>Complete System Breakdown & Features</h2>
+            <p style="color:var(--muted); max-width:620px; margin: 8px auto 0;">Everything built into FuelPulse to give you full visibility into vehicle consumption and operating expenses.</p>
+        </div>
+
+        <div class="modules-grid">
+            <article class="module-card">
+                <span class="module-badge">Analytics</span>
+                <h3>📊 Executive Dashboard</h3>
+                <p>The centralized mission control displaying your entire fuel profile in real time.</p>
+                <ul class="module-list">
+                    <li>True Tank-to-Tank mileage KPI</li>
+                    <li>Fuel cost per kilometre (₹/km)</li>
+                    <li>Interactive monthly spend trend graphs</li>
+                    <li>Vehicle expense distribution charts</li>
+                    <li>Recent fill-up activity ledger</li>
+                </ul>
+            </article>
+
+            <article class="module-card">
+                <span class="module-badge">Data Entry</span>
+                <h3>⛽ Smart Fill-up Logger</h3>
+                <p>Engineered for lightning-fast fuel logging at the pump with zero mental math.</p>
+                <ul class="module-list">
+                    <li>3-Way auto-calculator (Rate × Litres = Cost)</li>
+                    <li>Live previous odometer prompt & distance delta</li>
+                    <li>Auto-cut full-tank vs partial fill detection</li>
+                    <li>Mobile-friendly decimal number keyboards</li>
+                    <li>Instant chronological sequence validation</li>
+                </ul>
+            </article>
+
+            <article class="module-card">
+                <span class="module-badge">Intelligence</span>
+                <h3>📈 Analytics Engine</h3>
+                <p>Statistical formulas that separate genuine consumption from rough approximations.</p>
+                <ul class="module-list">
+                    <li>Verified full-tank mileage formula</li>
+                    <li>Vehicle efficiency ranking leaderboard</li>
+                    <li>Month-by-month full-tank mileage pivot table</li>
+                    <li>Detailed tank-to-tank cycle intervals</li>
+                    <li>Vector Chart.js interactive charts</li>
+                </ul>
+            </article>
+
+            <article class="module-card">
+                <span class="module-badge">Garage</span>
+                <h3>🚗 Vehicle Management</h3>
+                <p>Register, track, and categorize any type of motorized vehicle in one place.</p>
+                <ul class="module-list">
+                    <li>Cars, Bikes, Trucks, Buses, and Vans</li>
+                    <li>Fuel types: Petrol, Diesel, CNG, EV, Hybrid</li>
+                    <li>Unique owner-scoped vehicle identification</li>
+                    <li>Individual lifetime expense totals</li>
+                    <li>Complete edit & archive controls</li>
+                </ul>
+            </article>
+
+            <article class="module-card">
+                <span class="module-badge">Security</span>
+                <h3>⚠️ Data Quality & Auditing</h3>
+                <p>Guarantees that your analytics remain mathematically sound and uncorrupted.</p>
+                <ul class="module-list">
+                    <li>Chronological odometer anomaly detection</li>
+                    <li>Negative value & zero-litre filtering</li>
+                    <li>Automatic quarantine of broken readings</li>
+                    <li>One-click inline record correction dialog</li>
+                    <li>Same-day multi-fill support</li>
+                </ul>
+            </article>
+
+            <article class="module-card">
+                <span class="module-badge">Reporting</span>
+                <h3>📥 CSV Export Center</h3>
+                <p>Export clean, structured data for corporate taxes, accounting, or fleet records.</p>
+                <ul class="module-list">
+                    <li>Vehicle mileage performance summary (CSV)</li>
+                    <li>Monthly fuel consumption & expense summary (CSV)</li>
+                    <li>Full-tank verified segment audit (CSV)</li>
+                    <li>Quarantined flagged readings audit (CSV)</li>
+                    <li>Admin multi-account fleet management</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <!-- ==================== METRICS & FORMULAS MATRIX ==================== -->
     <section class="section">
         <div class="section-title">
-            <span class="eyebrow">What you get</span>
-            <h2>Everything you need to track fuel smartly</h2>
+            <span class="eyebrow">Calculations & Exports</span>
+            <h2>The Science Behind Your Fuel Data</h2>
+            <p style="color:var(--muted); max-width:620px; margin: 8px auto 0;">How FuelPulse calculates your figures and what downloadable files are provided.</p>
         </div>
-        <div class="feature-grid">
-            <article class="feature"><div class="feature-icon">📏</div><h3>Accurate mileage</h3>
-                <p>Calculated between full-tank fills, with partial top-ups included in the fuel total.</p></article>
-            <article class="feature"><div class="feature-icon">💰</div><h3>Expense tracking</h3>
-                <p>See monthly spending, average price per litre and fuel bought for every vehicle.</p></article>
-            <article class="feature"><div class="feature-icon">🛣️</div><h3>Cost per kilometre</h3>
-                <p>Find out which vehicle is cheapest to run, and whether it is getting more expensive.</p></article>
-            <article class="feature"><div class="feature-icon">⚠️</div><h3>Smart validation</h3>
-                <p>Odometer errors and zero-litre entries are flagged in an invalid-reading report.</p></article>
-            <article class="feature"><div class="feature-icon">📈</div><h3>Visual analytics</h3>
-                <p>Interactive dashboards, monthly trend charts and CSV exports for every report.</p></article>
-            <article class="feature"><div class="feature-icon">🔒</div><h3>Private by design</h3>
-                <p>Each user sees only their own vehicles. Admins can view and manage every account.</p></article>
+
+        <div class="matrix-grid">
+            <div class="matrix-card">
+                <h3>🧮 Core Calculated Metrics</h3>
+                <div class="matrix-item">
+                    <strong>Full-Tank Mileage (km/L) — Exact & Verified</strong>
+                    <span>Distance driven between two full-tank fills divided by all fuel purchased between them (including partial top-ups). The industry gold standard for true efficiency.</span>
+                </div>
+                <div class="matrix-item">
+                    <strong>Running Cost per Kilometre (₹/km)</strong>
+                    <span>Total fuel spend over a verified cycle divided by the distance traveled. Reveals the true operational cost of taking each vehicle on the road.</span>
+                </div>
+                <div class="matrix-item">
+                    <strong>Approximate Mileage (km/L) — Single Fill Estimate</strong>
+                    <span>Single trip distance divided by single fill litres. Marked as approximate because partial fills do not reflect total burned fuel.</span>
+                </div>
+                <div class="matrix-item">
+                    <strong>Average Price per Litre (₹/L)</strong>
+                    <span>Weighted average price paid across all fill-ups, showing price volatility trends over time.</span>
+                </div>
+            </div>
+
+            <div class="matrix-card">
+                <h3>📄 Included Downloadable Reports (CSV)</h3>
+                <div class="matrix-item">
+                    <strong>1. Vehicle Mileage Report (CSV)</strong>
+                    <span>Vehicle code, fuel type, full-tank cycles, verified km/L, cost per km, and efficiency ranking.</span>
+                </div>
+                <div class="matrix-item">
+                    <strong>2. Monthly Fuel Summary Report (CSV)</strong>
+                    <span>Monthly fill count, total litres bought, total cost, average ₹/L, and monthly mileage averages.</span>
+                </div>
+                <div class="matrix-item">
+                    <strong>3. Tank-to-Tank Cycles Report (CSV)</strong>
+                    <span>Start and end dates, start and end odometers, intermediate partial top-ups, distance driven, and exact cycle economy.</span>
+                </div>
+                <div class="matrix-item">
+                    <strong>4. Flagged Reading Audit Log (CSV)</strong>
+                    <span>Quarantined entries with error descriptions (e.g. reverse odometer sequence) for fleet compliance and data cleaning.</span>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="section steps-section">
+    <!-- ==================== ROLES ==================== -->
+    <section class="section" style="background:var(--card-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
         <div class="section-title">
-            <span class="eyebrow">How it works</span>
-            <h2>Three steps to clearer fuel data</h2>
+            <span class="eyebrow">Built for Everyone</span>
+            <h2>Designed for Individual Drivers & Fleet Teams</h2>
         </div>
-        <div class="steps">
-            <div class="step"><span class="step-no">1</span><h3>Add your vehicles</h3>
-                <p>Register each car, bike, truck or bus with its fuel type.</p></div>
-            <div class="step"><span class="step-no">2</span><h3>Log every fill-up</h3>
-                <p>Enter the date, odometer reading, litres and cost. Mark partial fills as partial.</p></div>
-            <div class="step"><span class="step-no">3</span><h3>Read the insights</h3>
-                <p>Dashboards, charts and reports update automatically as your data grows.</p></div>
-        </div>
-    </section>
-
-    <section class="section roles">
-        <div class="role-card">
-            <h3>👤 For users</h3>
-            <p>Track your own vehicles, see your mileage, costs and charts, and edit your records at any time.</p>
-        </div>
-        <div class="role-card admin">
-            <h3>🛡️ For admins</h3>
-            <p>View every account's data and analytics, edit records on behalf of any user, and manage accounts.</p>
+        <div class="roles">
+            <div class="role-card">
+                <h3>👤 For Individual Drivers & Vehicle Owners</h3>
+                <p>Track your personal cars and bikes, see true mileage, optimize driving habits, budget fuel expenses, and download CSV reports for personal expense tracking.</p>
+            </div>
+            <div class="role-card admin">
+                <h3>🛡️ For Fleet Managers & Administrators</h3>
+                <p>Oversee multiple user accounts, inspect cross-vehicle operational costs, audit flagged entries, edit records on behalf of drivers, and manage organization-wide fleet data.</p>
+            </div>
         </div>
     </section>
 
-    <footer class="site-footer">Fuel Consumption Analysis System</footer>
+    <!-- ==================== FAQ ==================== -->
+    <section class="section" id="landing-faq">
+        <div class="section-title">
+            <span class="eyebrow">Questions & Answers</span>
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-grid">
+            <div class="faq-card">
+                <h3>Why is full-tank mileage more accurate than trip mileage?</h3>
+                <p>Fuel tank shapes are irregular, so fuel gauges and single partial fills cannot accurately tell you how much fuel was burned. By filling to full twice, the litres needed to refill the tank exactly equal the fuel burned during that distance.</p>
+            </div>
+            <div class="faq-card">
+                <h3>Can I still log partial top-ups?</h3>
+                <p>Yes! If you add a partial fill (e.g. ₹500 of petrol), untick "Tank filled to full". FuelPulse stores the fuel and cost, and when you next fill to full, it combines all intermediate fuel to calculate exact mileage without missing a drop.</p>
+            </div>
+            <div class="faq-card">
+                <h3>What if I accidentally enter a wrong odometer reading?</h3>
+                <p>FuelPulse automatically checks the reading against previous logs. If an impossible number is entered, it flags the row in the "Needs Review" panel so you can fix or delete it without skewing your dashboard statistics.</p>
+            </div>
+            <div class="faq-card">
+                <h3>Can I export my data for tax or accounting purposes?</h3>
+                <p>Yes. Every report (Vehicle Breakdown, Monthly Expenses, Tank Cycles, and Flagged Entries) features an instant CSV download button ready for Excel, Google Sheets, or accounting software.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CTA BANNER ==================== -->
+    <section class="section" style="padding-bottom: 60px;">
+        <div class="landing-cta">
+            <h2>Start Tracking Your Fuel Economy Today</h2>
+            <p>Join drivers and fleet owners who save money and detect vehicle performance issues early with FuelPulse.</p>
+            <div class="hero-actions">
+                <button class="btn-primary lg" data-open-auth="signup" style="background:var(--card); color:var(--teal); box-shadow:0 6px 18px rgba(0,0,0,0.18); border:1px solid var(--line);">Create free account</button>
+                <button class="btn-ghost on-dark lg" data-open-auth="login">Sign in to your dashboard</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">FuelPulse · Smart Fuel & Mileage Analysis</footer>
 </div>
 
 <!-- ============================ APP ============================ -->
 <div id="app-view" class="view">
     <header class="topbar">
-        <div class="brand"><span class="brand-mark">⛽</span><span>Fuel Consumption Analysis</span></div>
+        <div class="brand"><span class="brand-mark">⛽</span><span>FuelPulse</span></div>
         <div class="top-right">
+            <button class="theme-toggle" data-action="toggle-theme" type="button" aria-label="Toggle dark/light theme" title="Toggle theme">
+                <span class="theme-icon">🌙</span> <span class="theme-text">Dark</span>
+            </button>
+            <button class="btn-ghost on-dark sm" id="faq-modal-btn" type="button">❓ FAQ</button>
             <div class="user-chip">
                 <span class="avatar" id="user-initial">?</span>
                 <span id="user-name"></span>
@@ -117,9 +708,9 @@
     <nav class="tabs">
         <button class="nav-btn active" data-page="dashboard">📊 Dashboard</button>
         <button class="nav-btn" data-page="vehicles">🚗 Vehicles</button>
-        <button class="nav-btn" data-page="records">⛽ Fuel Records</button>
+        <button class="nav-btn" data-page="records">⛽ Fuel Logs</button>
         <button class="nav-btn" data-page="analytics">📈 Analytics</button>
-        <button class="nav-btn" data-page="invalid">⚠️ Invalid <span id="invalid-badge" class="count-badge" hidden>0</span></button>
+        <button class="nav-btn" data-page="invalid">⚠️ Needs Review <span id="invalid-badge" class="count-badge" hidden>0</span></button>
         <button class="nav-btn admin-only" data-page="users">👥 Users</button>
     </nav>
 
@@ -212,8 +803,8 @@
         <section id="page-records" class="page">
             <div class="page-head">
                 <div>
-                    <h2>Fuel records</h2>
-                    <p>Log every fill-up. Accurate mileage needs two full-tank fills for the same vehicle.</p>
+                    <h2>Fuel Logs</h2>
+                    <p>Log each fill-up with smart rate auto-calculation. Accurate mileage is measured between full-tank fills.</p>
                 </div>
             </div>
 
@@ -222,30 +813,33 @@
                 <div class="field span-2">
                     <label for="record-vehicle">Vehicle</label>
                     <select id="record-vehicle" required></select>
+                    <div id="odo-helper" class="odo-helper" style="display:none;"></div>
                 </div>
                 <div class="field">
                     <label for="fill-date">Fill date</label>
                     <input type="date" id="fill-date" required>
                 </div>
                 <div class="field">
-                    <label for="odometer">Odometer (km)</label>
-                    <input type="number" id="odometer" min="0" step="0.01" required>
+                    <label for="odometer">Odometer reading (km)</label>
+                    <input type="number" id="odometer" min="0" step="0.01" inputmode="decimal" required placeholder="e.g. 45210">
+                </div>
+                <div class="field">
+                    <label for="fuel-rate">Fuel rate (₹ / litre) <small style="color:var(--muted); font-weight:normal;">(Auto-calculates)</small></label>
+                    <input type="number" id="fuel-rate" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 102.50">
                 </div>
                 <div class="field">
                     <label for="litres">Fuel quantity (litres)</label>
-                    <input type="number" id="litres" min="0.001" step="0.001" required>
+                    <input type="number" id="litres" min="0.001" step="0.001" inputmode="decimal" required placeholder="e.g. 35.5">
                 </div>
-                <div class="field">
+                <div class="field span-2">
                     <label for="total-cost">Total cost (₹)</label>
-                    <input type="number" id="total-cost" min="0" step="0.01" required>
+                    <input type="number" id="total-cost" min="0" step="0.01" inputmode="decimal" required placeholder="e.g. 3638.75">
                 </div>
                 <label class="checkbox-label span-2">
                     <input type="checkbox" id="full-tank" checked>
-                    Tank filled to full
+                    <span>Tank filled to full / auto-cut <small style="display:block; font-weight:normal; color:var(--muted);">Untick for partial top-ups. Consecutive full tanks provide exact mileage.</small></span>
                 </label>
-                <p class="hint span-2">Untick for a partial fill. Accurate mileage is only calculated between two full-tank fills.
-                    Odometer readings must increase with the fill date.</p>
-                <button class="btn-primary span-2" type="submit">Add fuel record</button>
+                <button class="btn-primary span-2" type="submit">Log Fill-up</button>
             </form>
 
             <div class="panel-head"><h3>Fuel history</h3></div>
@@ -266,8 +860,8 @@
         <section id="page-analytics" class="page">
             <div class="page-head">
                 <div>
-                    <h2>Fuel analytics</h2>
-                    <p>Detailed calculations, reports and charts.</p>
+                    <h2>Fuel Analytics & Reports</h2>
+                    <p>Detailed mileage calculations, interactive trends, and vehicle comparison.</p>
                 </div>
             </div>
 
@@ -281,9 +875,9 @@
                 <div class="note">
                     <strong>How mileage is calculated</strong>
                     <ul>
-                        <li><span class="badge badge-full">Full-tank</span> Distance between two full-tank fills divided by all fuel bought after the first fill, up to and including the second. Partial fills in between are added to the fuel total. This is the accurate figure.</li>
-                        <li><span class="badge badge-approx">Approximate</span> Distance between two valid readings divided by the litres bought at the later fill. It assumes fuel bought equals fuel burned, so partial fills make it unreliable. Use it only as a rough guide.</li>
-                        <li>An invalid reading breaks the chain: no distance or mileage is calculated across it. Expense totals still include any record with positive litres and a non-negative cost.</li>
+                        <li><span class="badge badge-full">Full-tank</span> Distance between two full-tank fills divided by all fuel bought after the first fill up to the second. Partial fills in between are included in the fuel total. This is the exact verified figure.</li>
+                        <li><span class="badge badge-approx">Approximate</span> Distance between two valid readings divided by litres bought at the later fill. Use it only as a rough estimate.</li>
+                        <li>An invalid reading pauses calculation: no distance or mileage is calculated across it. Expense totals still include any record with positive litres.</li>
                     </ul>
                 </div>
 
@@ -294,72 +888,115 @@
                     <div class="stat-card tone-purple"><div class="stat-icon">🧮</div><div><span class="stat-label">Cost per km · Full-tank</span><strong class="stat-value" id="analytics-cost-km">N/A</strong></div></div>
                 </div>
 
-                <div class="panel-head">
-                    <h3>Vehicle-wise mileage report</h3>
-                    <a class="btn-ghost sm" data-export="vehicle-mileage">Download CSV</a>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr>
-                            <th>Rank</th><th>Vehicle</th><th>Fuel</th><th>Full-tank segments</th>
-                            <th>Full-tank km/L</th><th>Full-tank ₹/km</th><th>Approx. km/L</th><th>Approx. ₹/km</th><th>Invalid</th>
-                        </tr></thead>
-                        <tbody id="vehicle-analytics"></tbody>
-                    </table>
+                <div class="subtabs" id="analytics-subtabs">
+                    <button class="subtab-btn active" data-subtab="charts">📊 Interactive Charts</button>
+                    <button class="subtab-btn" data-subtab="vehicles">🚗 Vehicle Breakdown</button>
+                    <button class="subtab-btn" data-subtab="monthly">📅 Monthly Report</button>
+                    <button class="subtab-btn" data-subtab="segments">🔄 Tank-to-Tank Cycles</button>
                 </div>
 
-                <div class="panel-head">
-                    <h3>Fuel expense summary</h3>
-                    <a class="btn-ghost sm" data-export="monthly-summary">Download monthly CSV</a>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Vehicle</th><th>Records</th><th>Fuel (L)</th><th>Cost (₹)</th><th>Avg ₹/L</th><th>Full-tank distance (km)</th></tr></thead>
-                        <tbody id="expense-analytics"></tbody>
-                    </table>
-                </div>
-
-                <div class="panel-head"><h3>Monthly fuel report</h3></div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr>
-                            <th>Month</th><th>Records</th><th>Fuel (L)</th><th>Cost (₹)</th><th>Avg ₹/L</th>
-                            <th>Full-tank km/L</th><th>Full-tank ₹/km</th><th>Approx. km/L</th>
-                        </tr></thead>
-                        <tbody id="monthly-analytics"></tbody>
-                    </table>
-                </div>
-
-                <div class="panel-head"><h3>Month-wise full-tank mileage by vehicle (km/L)</h3></div>
-                <div class="table-wrap">
-                    <table>
-                        <thead id="pivot-head"></thead>
-                        <tbody id="pivot-body"></tbody>
-                    </table>
-                </div>
-
-                <div class="panel-head">
-                    <h3>Full-tank segments</h3>
-                    <a class="btn-ghost sm" data-export="full-tank-segments">Download CSV</a>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Vehicle</th><th>From</th><th>To</th><th>Distance (km)</th><th>Fuel (L)</th><th>Partial fills</th><th>km/L</th><th>₹/km</th></tr></thead>
-                        <tbody id="segment-list"></tbody>
-                    </table>
+                <!-- Sub-section: Charts -->
+                <div id="an-section-charts" class="an-section">
+                    <div class="dash-grid">
+                        <div class="panel chart-card">
+                            <h3>Monthly Fuel Cost (₹)</h3>
+                            <div class="chart-box"><canvas id="chart-a-monthly-cost"></canvas></div>
+                        </div>
+                        <div class="panel chart-card">
+                            <h3>Monthly Fuel Consumption (L)</h3>
+                            <div class="chart-box"><canvas id="chart-a-monthly-fuel"></canvas></div>
+                        </div>
+                        <div class="panel chart-card wide">
+                            <h3>Monthly Mileage Trend by Vehicle (km/L)</h3>
+                            <div class="chart-box"><canvas id="chart-a-monthly-mileage"></canvas></div>
+                        </div>
+                        <div class="panel chart-card">
+                            <h3>Vehicle Mileage Comparison</h3>
+                            <div class="chart-box"><canvas id="chart-a-vehicle-mileage"></canvas></div>
+                        </div>
+                        <div class="panel chart-card">
+                            <h3>Fuel Cost per km (₹)</h3>
+                            <div class="chart-box"><canvas id="chart-a-cost-per-km"></canvas></div>
+                        </div>
+                        <div class="panel chart-card">
+                            <h3>Vehicle Fuel Spend Share</h3>
+                            <div class="chart-box"><canvas id="chart-a-vehicle-cost"></canvas></div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="panel-head"><h3>Visual analysis</h3></div>
-                <div id="charts" class="chart-grid"></div>
+                <!-- Sub-section: Vehicles -->
+                <div id="an-section-vehicles" class="an-section" hidden>
+                    <div class="panel-head">
+                        <h3>Vehicle-wise mileage report</h3>
+                        <a class="btn-ghost sm" data-export="vehicle-mileage">Download CSV</a>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr>
+                                <th>Rank</th><th>Vehicle</th><th>Fuel</th><th>Full-tank cycles</th>
+                                <th>Full-tank km/L</th><th>Full-tank ₹/km</th><th>Approx. km/L</th><th>Approx. ₹/km</th><th>Needs Review</th>
+                            </tr></thead>
+                            <tbody id="vehicle-analytics"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="panel-head">
+                        <h3>Fuel expense summary</h3>
+                        <a class="btn-ghost sm" data-export="monthly-summary">Download monthly CSV</a>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Vehicle</th><th>Records</th><th>Fuel (L)</th><th>Cost (₹)</th><th>Avg ₹/L</th><th>Full-tank distance (km)</th></tr></thead>
+                            <tbody id="expense-analytics"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sub-section: Monthly -->
+                <div id="an-section-monthly" class="an-section" hidden>
+                    <div class="panel-head"><h3>Monthly fuel report</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr>
+                                <th>Month</th><th>Records</th><th>Fuel (L)</th><th>Cost (₹)</th><th>Avg ₹/L</th>
+                                <th>Full-tank km/L</th><th>Full-tank ₹/km</th><th>Approx. km/L</th>
+                            </tr></thead>
+                            <tbody id="monthly-analytics"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="panel-head"><h3>Month-wise full-tank mileage by vehicle (km/L)</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead id="pivot-head"></thead>
+                            <tbody id="pivot-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sub-section: Segments -->
+                <div id="an-section-segments" class="an-section" hidden>
+                    <div class="panel-head">
+                        <h3>Tank-to-Tank Cycles (Full-Tank Intervals)</h3>
+                        <a class="btn-ghost sm" data-export="full-tank-segments">Download CSV</a>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Vehicle</th><th>From</th><th>To</th><th>Distance (km)</th><th>Fuel (L)</th><th>Partial fills</th><th>km/L</th><th>₹/km</th></tr></thead>
+                            <tbody id="segment-list"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Invalid readings -->
+        <!-- Flagged entries (formerly invalid) -->
         <section id="page-invalid" class="page">
             <div class="page-head">
                 <div>
-                    <h2>Invalid reading report</h2>
-                    <p>These records are left out of distance and mileage calculations. Fix the record or delete it and add a corrected one.</p>
+                    <h2>Flagged Entries</h2>
+                    <p>Entries with out-of-order odometer readings or zero litres are excluded from mileage calculations. Correct or remove them here to restore complete accuracy.</p>
                 </div>
                 <a class="btn-ghost sm" data-export="invalid-readings">Download CSV</a>
             </div>
@@ -394,7 +1031,7 @@
         </section>
     </main>
 
-    <footer class="site-footer">Fuel Consumption Analysis System</footer>
+    <footer class="site-footer">FuelPulse · Smart Fuel & Mileage Analysis</footer>
 </div>
 
 <!-- ============================ AUTH DIALOG ============================ -->
@@ -402,8 +1039,8 @@
     <div class="modal-card">
         <div class="modal-head">
             <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login">Sign in</button>
-                <button class="auth-tab" data-tab="signup">Create account</button>
+                <button type="button" class="auth-tab active" data-tab="login">Sign in</button>
+                <button type="button" class="auth-tab" data-tab="signup">Create account</button>
             </div>
             <button type="button" class="icon-btn" data-close aria-label="Close">✕</button>
         </div>
@@ -411,33 +1048,39 @@
         <form id="login-form" class="form-grid">
             <div class="field">
                 <label for="login-username">Username</label>
-                <input id="login-username" required autocomplete="username">
+                <input id="login-username" name="username" type="text" placeholder="e.g. admin or username" required autocomplete="username">
             </div>
             <div class="field">
                 <label for="login-password">Password</label>
-                <input id="login-password" type="password" required autocomplete="current-password">
+                <input id="login-password" name="password" type="password" placeholder="••••••••" required autocomplete="current-password">
             </div>
             <p id="login-error" class="form-error" hidden></p>
             <button class="btn-primary block" type="submit">Sign in</button>
+            <div style="grid-column: 1 / -1; text-align:center; font-size:13.5px; color:var(--muted); margin-top:6px;">
+                Don't have an account? <button type="button" data-switch-auth="signup" style="border:0; background:none; color:var(--teal); font-weight:700; cursor:pointer; padding:0; text-decoration:underline;">Create free account →</button>
+            </div>
         </form>
 
         <form id="signup-form" class="form-grid" hidden>
             <div class="field">
                 <label for="signup-username">Choose a username</label>
-                <input id="signup-username" required minlength="3" maxlength="50"
+                <input id="signup-username" name="username" type="text" placeholder="e.g. driver_john" required minlength="3" maxlength="50"
                        pattern="[A-Za-z0-9_.\-]+" autocomplete="username">
                 <small class="hint">3–50 characters: letters, numbers, dot, dash or underscore.</small>
             </div>
             <div class="field">
                 <label for="signup-password">Create a password</label>
-                <input id="signup-password" type="password" required minlength="6" autocomplete="new-password">
+                <input id="signup-password" name="password" type="password" placeholder="Minimum 6 characters" required minlength="6" autocomplete="new-password">
             </div>
             <div class="field">
                 <label for="signup-confirm">Confirm password</label>
-                <input id="signup-confirm" type="password" required minlength="6" autocomplete="new-password">
+                <input id="signup-confirm" name="confirm_password" type="password" placeholder="Re-enter your password" required minlength="6" autocomplete="new-password">
             </div>
             <p id="signup-error" class="form-error" hidden></p>
             <button class="btn-primary block" type="submit">Create account</button>
+            <div style="grid-column: 1 / -1; text-align:center; font-size:13.5px; color:var(--muted); margin-top:6px;">
+                Already have an account? <button type="button" data-switch-auth="login" style="border:0; background:none; color:var(--teal); font-weight:700; cursor:pointer; padding:0; text-decoration:underline;">Sign in here →</button>
+            </div>
         </form>
     </div>
 </dialog>
@@ -456,6 +1099,41 @@
             <button type="submit" class="btn-primary">Save changes</button>
         </div>
     </form>
+</dialog>
+
+<!-- ============================ FAQ / HELP DIALOG ============================ -->
+<dialog id="faq-dialog" class="modal" style="width:min(680px, 94vw);">
+    <div class="modal-card">
+        <div class="modal-head">
+            <h3 style="display:flex; align-items:center; gap:8px;">❓ Frequently Asked Questions & Calculations</h3>
+            <button type="button" class="icon-btn" data-close aria-label="Close">✕</button>
+        </div>
+        <div style="display:grid; gap:14px; max-height:68vh; overflow-y:auto; padding-right:6px;">
+            <div class="faq-card" style="box-shadow:none; border:1px solid var(--line);">
+                <h4 style="margin:0 0 6px; color:var(--navy);">Why is full-tank mileage more accurate than trip mileage?</h4>
+                <p style="margin:0; font-size:13.5px; color:var(--muted);">Fuel tank shapes are irregular, so fuel gauges and single partial fills cannot accurately tell you how much fuel was burned. By filling to full twice, the litres needed to refill the tank exactly equal the fuel burned during that distance.</p>
+            </div>
+            <div class="faq-card" style="box-shadow:none; border:1px solid var(--line);">
+                <h4 style="margin:0 0 6px; color:var(--navy);">Can I still log partial top-ups?</h4>
+                <p style="margin:0; font-size:13.5px; color:var(--muted);">Yes! If you add a partial fill (e.g. ₹500 of petrol), untick "Tank filled to full". FuelPulse stores the fuel and cost, and when you next fill to full, it combines all intermediate fuel to calculate exact mileage without missing a drop.</p>
+            </div>
+            <div class="faq-card" style="box-shadow:none; border:1px solid var(--line);">
+                <h4 style="margin:0 0 6px; color:var(--navy);">How is Running Cost per km (₹/km) calculated?</h4>
+                <p style="margin:0; font-size:13.5px; color:var(--muted);">Total fuel expenditure across verified cycles divided by the verified distance driven. This reveals the actual operating expense of running your vehicle.</p>
+            </div>
+            <div class="faq-card" style="box-shadow:none; border:1px solid var(--line);">
+                <h4 style="margin:0 0 6px; color:var(--navy);">What happens if an odometer reading is flagged?</h4>
+                <p style="margin:0; font-size:13.5px; color:var(--muted);">If an entered odometer reading is lower than a previous reading, it appears in "Needs Review". It is excluded from verified mileage averages to prevent corrupted statistics, and you can edit or delete it anytime.</p>
+            </div>
+            <div class="faq-card" style="box-shadow:none; border:1px solid var(--line);">
+                <h4 style="margin:0 0 6px; color:var(--navy);">Can I export my data for tax or fleet bookkeeping?</h4>
+                <p style="margin:0; font-size:13.5px; color:var(--muted);">Yes, in the Analytics tab, click "Download CSV" on any report (Vehicle Breakdown, Monthly Expenses, Tank Cycles, and Flagged Entries) for instant spreadsheet exports.</p>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-primary" data-close>Got it</button>
+        </div>
+    </div>
 </dialog>
 
 <script>
@@ -536,6 +1214,7 @@
     function showView(id) {
         document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === id));
         window.scrollTo(0, 0);
+        if (id === "landing") renderLandingDemoCharts();
     }
 
     function setBadge(count) {
@@ -575,17 +1254,88 @@
         setFormError("signup-error", "");
     }
 
-    function openAuth(tab) {
+    function openAuth(tab = "login") {
         setAuthTab(tab);
-        $("auth-dialog").showModal();
+        const dlg = $("auth-dialog");
+        if (!dlg.open) dlg.showModal();
+        setTimeout(() => {
+            const input = tab === "login" ? $("login-username") : $("signup-username");
+            if (input) input.focus();
+        }, 50);
     }
 
-    document.querySelectorAll("[data-open-auth]").forEach(button =>
-        button.addEventListener("click", () => openAuth(button.dataset.openAuth)));
+    function checkAuthUrl() {
+        const p = window.location.pathname;
+        const h = window.location.hash;
+        if (p === "/login" || h === "#login") {
+            openAuth("login");
+        } else if (p === "/signup" || h === "#signup") {
+            openAuth("signup");
+        }
+    }
+    window.addEventListener("hashchange", checkAuthUrl);
+
+    document.addEventListener("click", ev => {
+        const btn = ev.target.closest("[data-open-auth]");
+        if (btn) {
+            ev.preventDefault();
+            openAuth(btn.dataset.openAuth);
+        }
+        const sw = ev.target.closest("[data-switch-auth]");
+        if (sw) {
+            ev.preventDefault();
+            setAuthTab(sw.dataset.switchAuth);
+        }
+    });
+
     document.querySelectorAll(".auth-tab").forEach(button =>
         button.addEventListener("click", () => setAuthTab(button.dataset.tab)));
     document.querySelectorAll("[data-close]").forEach(button =>
         button.addEventListener("click", () => button.closest("dialog").close()));
+
+    // Close modals on backdrop click
+    document.querySelectorAll("dialog.modal").forEach(dlg => {
+        dlg.addEventListener("click", ev => {
+            const rect = dlg.getBoundingClientRect();
+            const isIn = (rect.top <= ev.clientY && ev.clientY <= rect.top + rect.height
+                && rect.left <= ev.clientX && ev.clientX <= rect.left + rect.width);
+            if (!isIn) dlg.close();
+        });
+    });
+
+    // Interactive showcase tabs on landing page
+    document.querySelectorAll(".showcase-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            document.querySelectorAll(".showcase-tab").forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            const target = tab.dataset.showcase;
+            document.querySelectorAll(".showcase-slide").forEach(s => {
+                s.classList.toggle("active", s.id === `slide-${target}`);
+            });
+            const address = $("showcase-address");
+            if (address) {
+                const urls = {
+                    dashboard: "fuelpulse.app/dashboard",
+                    logger: "fuelpulse.app/records/new",
+                    analytics: "fuelpulse.app/analytics/reports",
+                    vehicles: "fuelpulse.app/garage",
+                    audit: "fuelpulse.app/audit/flagged"
+                };
+                address.textContent = urls[target] || "fuelpulse.app";
+            }
+        });
+    });
+
+    // Jump from dashboard preview to corresponding showcase slide
+    document.querySelectorAll("[data-jump-showcase]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const target = btn.dataset.jumpShowcase;
+            const tab = document.querySelector(`.showcase-tab[data-showcase="${target}"]`);
+            if (tab) tab.click();
+            const showcaseEl = $("landing-showcase");
+            if (showcaseEl) showcaseEl.scrollIntoView({ behavior: "smooth" });
+        });
+    });
 
     $("login-form").addEventListener("submit", async event => {
         event.preventDefault();
@@ -866,14 +1616,25 @@
                 <td>${money(r.total_cost)}</td>
             </tr>`).join("") || '<tr><td colspan="4" class="empty-cell">No fuel records yet.</td></tr>';
 
+        state.lastAnalytics = analytics;
         renderUserCharts(analytics);
+    }
+
+    function chartGridColor() {
+        return document.documentElement.getAttribute("data-theme") === "dark"
+            ? "rgba(255, 255, 255, 0.08)"
+            : "#edf2f5";
+    }
+
+    function isDarkTheme() {
+        return document.documentElement.getAttribute("data-theme") === "dark";
     }
 
     function renderUserCharts(analytics) {
         const monthly = analytics.monthly;
         const vehicles = analytics.vehicles;
         const labels = vehicles.map(v => v.vehicle_code);
-        const axisOptions = { y: { beginAtZero: true, grid: { color: "#eef3f6" } }, x: { grid: { display: false } } };
+        const axisOptions = { y: { beginAtZero: true, grid: { color: chartGridColor() } }, x: { grid: { display: false } } };
 
         drawChart("chart-spend", {
             type: "bar",
@@ -905,8 +1666,8 @@
                 label: "km/L", data: monthly.map(m => m.fulltank_mileage),
                 borderColor: "#146b67", backgroundColor: "rgba(20,107,103,0.12)",
                 fill: true, tension: 0.35, spanGaps: true,
-                pointRadius: 5, pointBackgroundColor: "#fff", pointBorderWidth: 2 }] },
-            options: { maintainAspectRatio: false, scales: { y: { beginAtZero: false }, x: { grid: { display: false } } } },
+                pointRadius: 5, pointBackgroundColor: isDarkTheme() ? "#131f2f" : "#fff", pointBorderWidth: 2 }] },
+            options: { maintainAspectRatio: false, scales: { y: { beginAtZero: false, grid: { color: chartGridColor() } }, x: { grid: { display: false } } } },
         });
     }
 
@@ -1002,12 +1763,101 @@
         $("fill-date").value = new Date().toLocaleDateString("en-CA");
     }
 
+    function updateOdometerHint() {
+        const vehicleId = $("record-vehicle").value;
+        const v = state.cache.vehicles[vehicleId];
+        const hintBox = $("odo-helper");
+        if (!hintBox) return;
+        if (!vehicleId || !v) {
+            hintBox.style.display = "none";
+            return;
+        }
+        if (v.last_odometer == null) {
+            hintBox.innerHTML = '<span>📍 First fill-up for this vehicle. Enter your starting odometer reading.</span>';
+            hintBox.style.display = "flex";
+            return;
+        }
+        const dateText = v.last_fill_date ? ` on ${v.last_fill_date}` : "";
+        hintBox.innerHTML = `<span>📍 Last reading: <strong>${num(v.last_odometer)} km</strong>${dateText}</span><span id="odo-delta-badge" class="odo-delta"></span>`;
+        hintBox.style.display = "flex";
+        updateOdometerDelta();
+    }
+
+    function updateOdometerDelta() {
+        const vehicleId = $("record-vehicle").value;
+        const v = state.cache.vehicles[vehicleId];
+        const badge = $("odo-delta-badge");
+        if (!badge || !v || v.last_odometer == null) return;
+        const entered = parseFloat($("odometer").value);
+        if (isNaN(entered)) {
+            badge.textContent = "";
+            badge.className = "odo-delta";
+            return;
+        }
+        const diff = entered - v.last_odometer;
+        if (diff > 0) {
+            badge.textContent = `+${num(diff, 1)} km driven`;
+            badge.className = "odo-delta positive";
+        } else if (diff === 0) {
+            badge.textContent = "Equal to last reading";
+            badge.className = "odo-delta warning";
+        } else {
+            badge.textContent = `${num(diff, 1)} km (lower than last reading)`;
+            badge.className = "odo-delta warning";
+        }
+    }
+
+    function setupFuelCalculator() {
+        const rateEl = $("fuel-rate");
+        const litresEl = $("litres");
+        const costEl = $("total-cost");
+        if (!rateEl || !litresEl || !costEl) return;
+
+        function recalc(changedId) {
+            const rate = parseFloat(rateEl.value);
+            const litres = parseFloat(litresEl.value);
+            const cost = parseFloat(costEl.value);
+
+            if (changedId === "fuel-rate" || changedId === "litres") {
+                if (!isNaN(rate) && !isNaN(litres) && rate > 0 && litres > 0) {
+                    costEl.value = (rate * litres).toFixed(2);
+                }
+            } else if (changedId === "total-cost") {
+                if (!isNaN(cost) && !isNaN(litres) && litres > 0 && cost > 0) {
+                    rateEl.value = (cost / litres).toFixed(2);
+                } else if (!isNaN(cost) && !isNaN(rate) && rate > 0 && cost > 0) {
+                    litresEl.value = (cost / rate).toFixed(3);
+                }
+            }
+        }
+
+        rateEl.addEventListener("input", () => recalc("fuel-rate"));
+        litresEl.addEventListener("input", () => recalc("litres"));
+        costEl.addEventListener("input", () => recalc("total-cost"));
+        $("record-vehicle").addEventListener("change", updateOdometerHint);
+        $("odometer").addEventListener("input", updateOdometerDelta);
+    }
+
+    function setupAnalyticsSubtabs() {
+        document.querySelectorAll("#analytics-subtabs .subtab-btn").forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll("#analytics-subtabs .subtab-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                const target = btn.dataset.subtab;
+                document.querySelectorAll(".an-section").forEach(sec => {
+                    sec.hidden = sec.id !== `an-section-${target}`;
+                });
+            };
+        });
+    }
+
     async function loadRecords() {
         const [records, vehicles] = await Promise.all([
             api(scoped("/api/fuel-records")),
             api(scoped("/api/vehicles")),
         ]);
         state.cache.records = Object.fromEntries(records.map(r => [r.record_id, r]));
+        state.cache.vehicles = Object.fromEntries(vehicles.map(v => [v.vehicle_id, v]));
 
         const select = $("record-vehicle");
         const previous = select.value;
@@ -1015,12 +1865,13 @@
             `<option value="${v.vehicle_id}">${isAdmin() ? esc(v.owner_name) + " · " : ""}${esc(v.vehicle_code)} (${esc(v.fuel_type)})</option>`
         ).join("");
         if (vehicles.some(v => String(v.vehicle_id) === previous)) select.value = previous;
+        updateOdometerHint();
 
         $("fuel-list").innerHTML = records.map(r => `
             <tr class="${r.status === "invalid" ? "row-invalid" : ""}">
                 <td>${esc(r.fill_date)}</td>
                 <td class="admin-only">${esc(r.owner_name)}</td>
-                <td>${esc(r.vehicle_code)}</td>
+                <td><strong>${esc(r.vehicle_code)}</strong></td>
                 <td>${num(r.odometer_km)} km</td>
                 <td>${num(r.litres, 3)} L</td>
                 <td>${money(r.total_cost)}</td>
@@ -1029,13 +1880,13 @@
                 <td>${r.mileage == null ? "—" : "<strong>" + num(r.mileage) + "</strong> km/L"}</td>
                 <td>${basisBadge(r.basis)}</td>
                 <td>${r.status === "invalid"
-                    ? `<span class="badge badge-invalid" title="${esc(r.reason)}">Invalid</span>`
-                    : '<span class="badge badge-full">Valid</span>'}</td>
+                    ? `<span class="badge badge-invalid" title="${esc(r.reason)}">Flagged</span>`
+                    : '<span class="badge badge-full">Verified</span>'}</td>
                 <td class="actions">
                     <button class="btn-small" data-action="edit-record" data-id="${r.record_id}">Edit</button>
                     <button class="btn-small btn-danger" data-action="delete-record" data-id="${r.record_id}">Delete</button>
                 </td>
-            </tr>`).join("") || '<tr><td colspan="12" class="empty-cell">No fuel records yet.</td></tr>';
+            </tr>`).join("") || '<tr><td colspan="12" class="empty-cell"><span style="font-size:28px; display:block; margin-bottom:6px;">⛽</span><strong>No fuel fill-ups logged yet</strong><p style="color:var(--muted); font-size:13px; margin:4px 0 0;">Fill out the form above to record your first fill-up.</p></td></tr>';
     }
 
     $("record-form").addEventListener("submit", async event => {
@@ -1055,7 +1906,7 @@
             event.target.reset();
             setToday();
             $("full-tank").checked = true;
-            showMessage("Fuel record added successfully.");
+            showMessage("Fuel fill-up logged successfully.");
             refresh();
         } catch (err) {
             showMessage(err.message, true);
@@ -1083,6 +1934,105 @@
     // ------------------------------------------------------------------
     // Analytics
     // ------------------------------------------------------------------
+    function renderAnalyticsCharts(data) {
+        const monthly = data.monthly || [];
+        const vehicles = data.vehicles || [];
+        const pivot = data.monthly_vehicle_mileage || { months: [], vehicles: [], values: [] };
+        const monthLabels = monthly.map(m => m.month);
+        const vehicleCodes = vehicles.map(v => v.vehicle_code);
+        const axisGrid = { y: { beginAtZero: true, grid: { color: chartGridColor() } }, x: { grid: { display: false } } };
+
+        // 1. Monthly Cost
+        drawChart("chart-a-monthly-cost", {
+            type: "bar",
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: "Cost (₹)",
+                    data: monthly.map(m => m.total_cost),
+                    backgroundColor: "#146b67",
+                    borderRadius: 8
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: axisGrid }
+        });
+
+        // 2. Monthly Fuel
+        drawChart("chart-a-monthly-fuel", {
+            type: "bar",
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: "Fuel (L)",
+                    data: monthly.map(m => m.total_litres),
+                    backgroundColor: "#2e86ab",
+                    borderRadius: 8
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: axisGrid }
+        });
+
+        // 3. Monthly Mileage Trend (Line)
+        drawChart("chart-a-monthly-mileage", {
+            type: "line",
+            data: {
+                labels: pivot.months,
+                datasets: pivot.vehicles.map((code, idx) => ({
+                    label: code,
+                    data: pivot.months.map((_, mIdx) => pivot.values[mIdx] ? pivot.values[mIdx][idx] : null),
+                    borderColor: PALETTE[idx % PALETTE.length],
+                    backgroundColor: "transparent",
+                    tension: 0.3,
+                    pointRadius: 4,
+                    spanGaps: true
+                }))
+            },
+            options: { maintainAspectRatio: false, scales: { y: { beginAtZero: false, grid: { color: chartGridColor() } }, x: { grid: { display: false } } } }
+        });
+
+        // 4. Vehicle Mileage Comparison
+        drawChart("chart-a-vehicle-mileage", {
+            type: "bar",
+            data: {
+                labels: vehicleCodes,
+                datasets: [
+                    { label: "Full-tank (accurate)", data: vehicles.map(v => v.fulltank_mileage), backgroundColor: "#146b67", borderRadius: 8 },
+                    { label: "Approximate", data: vehicles.map(v => v.approx_mileage), backgroundColor: "#e0a030", borderRadius: 8 }
+                ]
+            },
+            options: { maintainAspectRatio: false, scales: axisGrid }
+        });
+
+        // 5. Fuel Cost per km
+        drawChart("chart-a-cost-per-km", {
+            type: "bar",
+            data: {
+                labels: vehicleCodes,
+                datasets: [{
+                    label: "Cost / km (₹)",
+                    data: vehicles.map(v => v.fulltank_cost_per_km),
+                    backgroundColor: "#7d5ba6",
+                    borderRadius: 8
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: axisGrid }
+        });
+
+        // 6. Vehicle Fuel Spend Share
+        drawChart("chart-a-vehicle-cost", {
+            type: "doughnut",
+            data: {
+                labels: vehicleCodes,
+                datasets: [{
+                    data: vehicles.map(v => v.total_cost),
+                    backgroundColor: PALETTE,
+                    borderWidth: 0
+                }]
+            },
+            options: { maintainAspectRatio: false, cutout: "62%", plugins: { legend: { position: "bottom" } } }
+        });
+    }
+
     async function loadAnalytics() {
         const needsUser = isAdminOverview();
         $("analytics-empty").hidden = !needsUser;
@@ -1093,6 +2043,7 @@
             link.setAttribute("href", scoped(`/api/export/${link.dataset.export}.csv`)));
 
         const data = await api(scoped("/api/analytics"));
+        state.cache.fullAnalytics = data;
         const t = data.totals;
 
         $("analytics-distance").textContent = num(t.total_distance) + " km";
@@ -1103,7 +2054,7 @@
         $("vehicle-analytics").innerHTML = data.vehicles.map(v => `
             <tr>
                 <td>${v.rank ?? "—"}</td>
-                <td>${esc(v.vehicle_code)}</td>
+                <td><strong>${esc(v.vehicle_code)}</strong></td>
                 <td>${esc(v.fuel_type)}</td>
                 <td>${v.fulltank_segments}</td>
                 <td>${orNA(v.fulltank_mileage)}</td>
@@ -1115,7 +2066,7 @@
 
         $("expense-analytics").innerHTML = data.vehicles.map(v => `
             <tr>
-                <td>${esc(v.vehicle_code)}</td><td>${v.records}</td>
+                <td><strong>${esc(v.vehicle_code)}</strong></td><td>${v.records}</td>
                 <td>${num(v.total_litres)}</td><td>${money(v.total_cost)}</td>
                 <td>${orNA(v.avg_price_per_litre, money)}</td><td>${num(v.fulltank_distance)}</td>
             </tr>`).join("") +
@@ -1125,7 +2076,7 @@
 
         $("monthly-analytics").innerHTML = data.monthly.map(m => `
             <tr>
-                <td>${esc(m.month)}</td><td>${m.records}</td>
+                <td><strong>${esc(m.month)}</strong></td><td>${m.records}</td>
                 <td>${num(m.total_litres)}</td><td>${money(m.total_cost)}</td>
                 <td>${orNA(m.avg_price_per_litre, money)}</td>
                 <td>${orNA(m.fulltank_mileage)}</td>
@@ -1136,28 +2087,23 @@
         const pivot = data.monthly_vehicle_mileage;
         $("pivot-head").innerHTML = "<tr><th>Month</th>" + pivot.vehicles.map(c => `<th>${esc(c)}</th>`).join("") + "</tr>";
         $("pivot-body").innerHTML = pivot.months.map((month, i) =>
-            `<tr><td>${esc(month)}</td>${pivot.values[i].map(v => `<td>${orNA(v)}</td>`).join("")}</tr>`
+            `<tr><td><strong>${esc(month)}</strong></td>${pivot.values[i].map(v => `<td>${orNA(v)}</td>`).join("")}</tr>`
         ).join("") || '<tr><td class="empty-cell">No data available.</td></tr>';
 
         $("segment-list").innerHTML = data.segments.map(s => `
             <tr>
-                <td>${esc(s.vehicle_code)}</td><td>${esc(s.start_date)}</td><td>${esc(s.end_date)}</td>
-                <td>${num(s.distance)}</td><td>${num(s.litres)}</td>
-                <td>${s.partial_fills}</td><td>${orNA(s.mileage)}</td>
+                <td><strong>${esc(s.vehicle_code)}</strong></td><td>${esc(s.start_date)}</td><td>${esc(s.end_date)}</td>
+                <td>${num(s.distance)} km</td><td>${num(s.litres)} L</td>
+                <td>${s.partial_fills}</td><td>${orNA(s.mileage)} km/L</td>
                 <td>${orNA(s.cost_per_km, money)}</td>
             </tr>`).join("") ||
-            '<tr><td colspan="8" class="empty-cell">No complete full-tank segments yet. Two full-tank fills are needed.</td></tr>';
+            '<tr><td colspan="8" class="empty-cell">No complete full-tank cycles recorded yet. Two consecutive full-tank fill-ups are needed.</td></tr>';
 
-        const charts = data.charts;
-        $("charts").innerHTML = CHART_CARDS.map(([key, title, wide]) => `
-            <figure class="chart-tile ${wide ? "wide" : ""}">
-                <figcaption>${esc(title)}</figcaption>
-                <img alt="${esc(title)} chart" src="data:image/png;base64,${charts[key]}">
-            </figure>`).join("");
+        renderAnalyticsCharts(data);
     }
 
     // ------------------------------------------------------------------
-    // Invalid readings
+    // Flagged readings (Needs review)
     // ------------------------------------------------------------------
     async function loadInvalid() {
         const rows = await api(scoped("/api/invalid-readings"));
@@ -1172,18 +2118,18 @@
         $("invalid-list").innerHTML = rows.map(r => `
             <tr>
                 <td class="admin-only">${esc(r.owner)}</td>
-                <td>${esc(r.vehicle_code)}</td>
+                <td><strong>${esc(r.vehicle_code)}</strong></td>
                 <td>${esc(r.fill_date)}</td>
                 <td>${num(r.odometer_km)} km</td>
                 <td>${num(r.litres, 3)} L</td>
                 <td>${money(r.total_cost)}</td>
                 <td>${r.full_tank ? "Full" : "Partial"}</td>
-                <td class="wrap">${esc(r.reason)}</td>
+                <td class="wrap"><span class="badge badge-invalid">${esc(r.reason)}</span></td>
                 <td class="actions">
                     <button class="btn-small" data-action="edit-record" data-id="${r.record_id}">Fix</button>
                     <button class="btn-small btn-danger" data-action="delete-record" data-id="${r.record_id}">Delete</button>
                 </td>
-            </tr>`).join("") || '<tr><td colspan="9" class="empty-cell">No invalid readings found. 🎉</td></tr>';
+            </tr>`).join("") || '<tr><td colspan="9" class="empty-cell"><span style="font-size:28px; display:block; margin-bottom:6px;">🎉</span><strong style="color:var(--teal)">All readings are valid!</strong><p style="color:var(--muted); font-size:13px; margin:4px 0 0;">No conflicting or out-of-order odometer readings detected.</p></td></tr>';
     }
 
     // ------------------------------------------------------------------
@@ -1260,26 +2206,170 @@
             "delete-vehicle": () => deleteItem(`/api/vehicles/${id}`, "vehicle", refresh),
             "edit-record": () => editRecord(id),
             "delete-record": () => deleteItem(`/api/fuel-records/${id}`, "fuel record", refresh),
+            "toggle-theme": () => toggleTheme(),
         };
         if (actions[button.dataset.action]) actions[button.dataset.action]();
     });
+
+    // ------------------------------------------------------------------
+    // Theme switching
+    // ------------------------------------------------------------------
+    function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        try {
+            localStorage.setItem("fuelpulse_theme", theme);
+        } catch (_) {}
+
+        const isDark = theme === "dark";
+        document.querySelectorAll("[data-action='toggle-theme']").forEach(btn => {
+            const icon = btn.querySelector(".theme-icon");
+            const text = btn.querySelector(".theme-text");
+            if (icon) icon.textContent = isDark ? "☀️" : "🌙";
+            if (text) text.textContent = isDark ? "Light" : "Dark";
+            btn.setAttribute("title", isDark ? "Switch to light mode" : "Switch to dark mode");
+            btn.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+        });
+
+        if (window.Chart) {
+            Chart.defaults.color = isDark ? "#8ca2b8" : "#526575";
+            Chart.defaults.borderColor = isDark ? "#1e334a" : "#dfe7ed";
+        }
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        applyTheme(next);
+
+        // Update landing demo charts if rendered
+        if (window.landingCharts) {
+            Object.values(window.landingCharts).forEach(c => {
+                try { if (c) c.destroy(); } catch (_) {}
+            });
+            window.landingCharts = null;
+            const spendEl = $("demo-chart-spend");
+            if (spendEl) delete spendEl.dataset.initialized;
+            renderLandingDemoCharts();
+        }
+
+        // Re-render active user dashboard charts if available
+        if (state.user && state.page === "dashboard" && state.lastAnalytics) {
+            renderUserCharts(state.lastAnalytics);
+        }
+        if (state.user && state.page === "analytics" && state.cache.fullAnalytics) {
+            renderAnalyticsCharts(state.cache.fullAnalytics);
+        }
+    }
 
     // ------------------------------------------------------------------
     // Start
     // ------------------------------------------------------------------
     if (window.Chart) {
         Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-        Chart.defaults.color = "#526575";
     }
+    const savedTheme = localStorage.getItem("fuelpulse_theme") || "light";
+    applyTheme(savedTheme);
+
     setToday();
+    setupFuelCalculator();
+    setupAnalyticsSubtabs();
+
+    function renderLandingDemoCharts() {
+        if (!window.Chart) return;
+        const spendEl = $("demo-chart-spend");
+        if (!spendEl || spendEl.dataset.initialized) return;
+        spendEl.dataset.initialized = "true";
+
+        window.landingCharts = window.landingCharts || {};
+        const months = ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+        const vehicles = ["Honda City (Car)", "Royal Enfield (Bike)", "Tata Ace (Van)"];
+        const gridColor = chartGridColor();
+
+        window.landingCharts.spend = new Chart(spendEl, {
+            type: "bar",
+            data: {
+                labels: months,
+                datasets: [{
+                    label: "Spend (₹)",
+                    data: [3400, 4200, 3950, 4600, 4250, 5685],
+                    backgroundColor: "#146b67",
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, grid: { color: gridColor } }, x: { grid: { display: false } } }
+            }
+        });
+
+        window.landingCharts.share = new Chart($("demo-chart-share"), {
+            type: "doughnut",
+            data: {
+                labels: vehicles,
+                datasets: [{
+                    data: [16200, 3885, 6000],
+                    backgroundColor: ["#146b67", "#e0a030", "#2e86ab"],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                cutout: "62%",
+                plugins: { legend: { position: "bottom" } }
+            }
+        });
+
+        window.landingCharts.mileage = new Chart($("demo-chart-mileage"), {
+            type: "bar",
+            data: {
+                labels: ["Honda City", "Enfield Bike", "Tata Ace"],
+                datasets: [
+                    { label: "Full-tank km/L", data: [16.8, 32.4, 13.2], backgroundColor: "#146b67", borderRadius: 8 },
+                    { label: "Approximate km/L", data: [16.2, 31.8, 12.8], backgroundColor: "#e0a030", borderRadius: 8 }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, grid: { color: gridColor } }, x: { grid: { display: false } } }
+            }
+        });
+
+        window.landingCharts.trend = new Chart($("demo-chart-trend"), {
+            type: "line",
+            data: {
+                labels: months,
+                datasets: [{
+                    label: "km/L",
+                    data: [15.9, 16.2, 16.5, 16.4, 16.8, 17.1],
+                    borderColor: "#146b67",
+                    backgroundColor: "rgba(20, 107, 103, 0.12)",
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 5,
+                    pointBackgroundColor: isDarkTheme() ? "#131f2f" : "#fff",
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: false, grid: { color: gridColor } }, x: { grid: { display: false } } }
+            }
+        });
+    }
 
     (async function init() {
         try {
             const { user } = await api("/api/auth/me");
-            if (user) enterApp(user);
-            else showView("landing");
+            if (user) {
+                enterApp(user);
+            } else {
+                showView("landing");
+                checkAuthUrl();
+            }
         } catch (_) {
             showView("landing");
+            checkAuthUrl();
         }
     })();
 </script>

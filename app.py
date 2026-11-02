@@ -6,6 +6,7 @@ import re
 from datetime import date
 from functools import wraps
 
+os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -46,7 +47,12 @@ db_pool = MySQLConnectionPool(
 )
 
 def get_db_connection():
-    return db_pool.get_connection()
+    conn = db_pool.get_connection()
+    try:
+        conn.ping(reconnect=True, attempts=1, delay=0)
+    except Exception:
+        pass
+    return conn
 
 
 def query(sql, params=()):
@@ -163,13 +169,25 @@ def record_owner(record_id):
 # ---------------------------------------------------------------------------
 def get_vehicles(owner_id=None):
     sql = """SELECT v.vehicle_id, v.owner_id, u.username AS owner_name,
-                    v.vehicle_code, v.vehicle_type, v.fuel_type
+                    v.vehicle_code, v.vehicle_type, v.fuel_type,
+                    (SELECT odometer_km FROM fuel_records fr
+                     WHERE fr.vehicle_id = v.vehicle_id
+                     ORDER BY fill_date DESC, record_id DESC LIMIT 1) AS last_odometer,
+                    (SELECT fill_date FROM fuel_records fr
+                     WHERE fr.vehicle_id = v.vehicle_id
+                     ORDER BY fill_date DESC, record_id DESC LIMIT 1) AS last_fill_date
              FROM vehicles v JOIN users u ON u.user_id = v.owner_id"""
     params = ()
     if owner_id is not None:
         sql += " WHERE v.owner_id = %s"
         params = (owner_id,)
-    return query(sql + " ORDER BY v.vehicle_id", params)
+    rows = query(sql + " ORDER BY v.vehicle_id", params)
+    for r in rows:
+        if r.get("last_odometer") is not None:
+            r["last_odometer"] = float(r["last_odometer"])
+        if r.get("last_fill_date") is not None:
+            r["last_fill_date"] = str(r["last_fill_date"])
+    return rows
 
 
 def get_fuel_data(owner_id=None):
@@ -549,17 +567,36 @@ def parse_record(data):
 
 def odometer_conflict(cursor, vehicle_id, fill_date, odometer_km, exclude_record_id=0):
     """Checks the odometer against the neighbouring readings of the same vehicle."""
-    cursor.execute("""SELECT fill_date, odometer_km FROM fuel_records
-                      WHERE vehicle_id = %s AND fill_date <= %s AND record_id <> %s
-                      ORDER BY fill_date DESC, record_id DESC LIMIT 1""",
-                   (vehicle_id, fill_date, exclude_record_id))
-    previous = cursor.fetchone()
+    if exclude_record_id:
+        cursor.execute("""
+            SELECT fill_date, odometer_km FROM fuel_records
+            WHERE vehicle_id = %s AND record_id <> %s
+              AND (fill_date < %s OR (fill_date = %s AND record_id < %s))
+            ORDER BY fill_date DESC, record_id DESC LIMIT 1
+        """, (vehicle_id, exclude_record_id, fill_date, fill_date, exclude_record_id))
+        previous = cursor.fetchone()
 
-    cursor.execute("""SELECT fill_date, odometer_km FROM fuel_records
-                      WHERE vehicle_id = %s AND fill_date > %s AND record_id <> %s
-                      ORDER BY fill_date ASC, record_id ASC LIMIT 1""",
-                   (vehicle_id, fill_date, exclude_record_id))
-    following = cursor.fetchone()
+        cursor.execute("""
+            SELECT fill_date, odometer_km FROM fuel_records
+            WHERE vehicle_id = %s AND record_id <> %s
+              AND (fill_date > %s OR (fill_date = %s AND record_id > %s))
+            ORDER BY fill_date ASC, record_id ASC LIMIT 1
+        """, (vehicle_id, exclude_record_id, fill_date, fill_date, exclude_record_id))
+        following = cursor.fetchone()
+    else:
+        cursor.execute("""
+            SELECT fill_date, odometer_km FROM fuel_records
+            WHERE vehicle_id = %s AND fill_date <= %s
+            ORDER BY fill_date DESC, record_id DESC LIMIT 1
+        """, (vehicle_id, fill_date))
+        previous = cursor.fetchone()
+
+        cursor.execute("""
+            SELECT fill_date, odometer_km FROM fuel_records
+            WHERE vehicle_id = %s AND fill_date > %s
+            ORDER BY fill_date ASC, record_id ASC LIMIT 1
+        """, (vehicle_id, fill_date))
+        following = cursor.fetchone()
 
     if previous and odometer_km <= float(previous["odometer_km"]):
         return (f"Odometer must be greater than the previous reading "
@@ -583,6 +620,8 @@ def scoped_analytics_or_error():
 # Pages
 # ---------------------------------------------------------------------------
 @app.route("/")
+@app.route("/login")
+@app.route("/signup")
 def home():
     return render_template("index.html")
 
@@ -906,51 +945,54 @@ def analytics():
     try:
         data = calculate_analytics(owner)
 
-        monthly = data["monthly"]
-        vehicle_rows = data["vehicles"]
-        pivot = data["monthly_vehicle_mileage"]
+        if request.args.get("include_images") == "1":
+            monthly = data["monthly"]
+            vehicle_rows = data["vehicles"]
+            pivot = data["monthly_vehicle_mileage"]
 
-        month_labels = [row["month"] for row in monthly]
-        codes = [row["vehicle_code"] for row in vehicle_rows]
+            month_labels = [row["month"] for row in monthly]
+            codes = [row["vehicle_code"] for row in vehicle_rows]
 
-        data["charts"] = {
-            "monthly_cost": bar_chart(
-                month_labels,
-                [r["total_cost"] for r in monthly],
-                "Monthly Fuel Cost", "Cost (₹)", decimals=0
-            ),
-            "monthly_fuel": bar_chart(
-                month_labels,
-                [r["total_litres"] for r in monthly],
-                "Monthly Fuel Consumption", "Fuel (litres)", decimals=1
-            ),
-            "monthly_mileage": line_chart(
-                pivot["months"], pivot["vehicles"], pivot["values"],
-                "Monthly Mileage Trend (full-tank)", "km per litre"
-            ),
-            "vehicle_mileage": grouped_bar_chart(
-                codes,
-                {
-                    "Full-tank (accurate)": [
-                        r["fulltank_mileage"] for r in vehicle_rows
-                    ],
-                    "Approximate": [
-                        r["approx_mileage"] for r in vehicle_rows
-                    ],
-                },
-                "Vehicle Mileage Comparison", "km per litre", decimals=1
-            ),
-            "vehicle_cost_per_km": bar_chart(
-                codes,
-                [r["fulltank_cost_per_km"] for r in vehicle_rows],
-                "Fuel Cost per km (full-tank)", "₹ per km", decimals=2
-            ),
-            "vehicle_cost": bar_chart(
-                codes,
-                [r["total_cost"] for r in vehicle_rows],
-                "Vehicle-wise Fuel Cost", "Cost (₹)", decimals=0
-            ),
-        }
+            data["charts"] = {
+                "monthly_cost": bar_chart(
+                    month_labels,
+                    [r["total_cost"] for r in monthly],
+                    "Monthly Fuel Cost", "Cost (₹)", decimals=0
+                ),
+                "monthly_fuel": bar_chart(
+                    month_labels,
+                    [r["total_litres"] for r in monthly],
+                    "Monthly Fuel Consumption", "Fuel (litres)", decimals=1
+                ),
+                "monthly_mileage": line_chart(
+                    pivot["months"], pivot["vehicles"], pivot["values"],
+                    "Monthly Mileage Trend (full-tank)", "km per litre"
+                ),
+                "vehicle_mileage": grouped_bar_chart(
+                    codes,
+                    {
+                        "Full-tank (accurate)": [
+                            r["fulltank_mileage"] for r in vehicle_rows
+                        ],
+                        "Approximate": [
+                            r["approx_mileage"] for r in vehicle_rows
+                        ],
+                    },
+                    "Vehicle Mileage Comparison", "km per litre", decimals=1
+                ),
+                "vehicle_cost_per_km": bar_chart(
+                    codes,
+                    [r["fulltank_cost_per_km"] for r in vehicle_rows],
+                    "Fuel Cost per km (full-tank)", "₹ per km", decimals=2
+                ),
+                "vehicle_cost": bar_chart(
+                    codes,
+                    [r["total_cost"] for r in vehicle_rows],
+                    "Vehicle-wise Fuel Cost", "Cost (₹)", decimals=0
+                ),
+            }
+        else:
+            data["charts"] = {}
 
         return jsonify(data)
 
