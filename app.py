@@ -796,12 +796,12 @@ def manage_vehicle(vehicle_id):
 def fuel_records():
     if request.method == "GET":
         owner = scope_user_id()
-        _, _, annotations, _, _, _ = analyze(owner)
-        rows = get_fuel_data(owner)
+        df, _, annotations, _, _, _ = analyze(owner)
+        rows = df.to_dict("records")
         rows.sort(key=lambda r: (r["fill_date"], r["record_id"]), reverse=True)
         for row in rows:
             note = annotations.get(row["record_id"], {})
-            row["fill_date"] = str(row["fill_date"])
+            row["fill_date"] = row["fill_date"].strftime("%Y-%m-%d")
             row["odometer_km"] = float(row["odometer_km"])
             row["litres"] = float(row["litres"])
             row["total_cost"] = float(row["total_cost"])
@@ -896,8 +896,58 @@ def analytics():
     owner, error = scoped_analytics_or_error()
     if error:
         return error
+
     try:
-        return jsonify(calculate_analytics(owner))
+        data = calculate_analytics(owner)
+
+        monthly = data["monthly"]
+        vehicle_rows = data["vehicles"]
+        pivot = data["monthly_vehicle_mileage"]
+
+        month_labels = [row["month"] for row in monthly]
+        codes = [row["vehicle_code"] for row in vehicle_rows]
+
+        data["charts"] = {
+            "monthly_cost": bar_chart(
+                month_labels,
+                [r["total_cost"] for r in monthly],
+                "Monthly Fuel Cost", "Cost (₹)", decimals=0
+            ),
+            "monthly_fuel": bar_chart(
+                month_labels,
+                [r["total_litres"] for r in monthly],
+                "Monthly Fuel Consumption", "Fuel (litres)", decimals=1
+            ),
+            "monthly_mileage": line_chart(
+                pivot["months"], pivot["vehicles"], pivot["values"],
+                "Monthly Mileage Trend (full-tank)", "km per litre"
+            ),
+            "vehicle_mileage": grouped_bar_chart(
+                codes,
+                {
+                    "Full-tank (accurate)": [
+                        r["fulltank_mileage"] for r in vehicle_rows
+                    ],
+                    "Approximate": [
+                        r["approx_mileage"] for r in vehicle_rows
+                    ],
+                },
+                "Vehicle Mileage Comparison", "km per litre", decimals=1
+            ),
+            "vehicle_cost_per_km": bar_chart(
+                codes,
+                [r["fulltank_cost_per_km"] for r in vehicle_rows],
+                "Fuel Cost per km (full-tank)", "₹ per km", decimals=2
+            ),
+            "vehicle_cost": bar_chart(
+                codes,
+                [r["total_cost"] for r in vehicle_rows],
+                "Vehicle-wise Fuel Cost", "Cost (₹)", decimals=0
+            ),
+        }
+
+        return jsonify(data)
+
     except Exception as exc:
         app.logger.exception("Analytics error")
         return jsonify({"error": str(exc)}), 500

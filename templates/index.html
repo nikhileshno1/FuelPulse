@@ -1148,7 +1148,7 @@
             </tr>`).join("") ||
             '<tr><td colspan="8" class="empty-cell">No complete full-tank segments yet. Two full-tank fills are needed.</td></tr>';
 
-        const charts = await api(scoped("/api/analytics/charts"));
+        const charts = data.charts;
         $("charts").innerHTML = CHART_CARDS.map(([key, title, wide]) => `
             <figure class="chart-tile ${wide ? "wide" : ""}">
                 <figcaption>${esc(title)}</figcaption>
