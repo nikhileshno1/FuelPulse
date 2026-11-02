@@ -13,6 +13,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.lines import Line2D
 from matplotlib.ticker import FuncFormatter
 import mysql.connector
+from mysql.connector.pooling import MySQLConnectionPool
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
@@ -32,15 +33,20 @@ MIN_PASSWORD_LENGTH = 6
 # ---------------------------------------------------------------------------
 # Database helpers
 # ---------------------------------------------------------------------------
+db_pool = MySQLConnectionPool(
+    pool_name="fuel_pool",
+    pool_size=5,
+    pool_reset_session=True,
+    host=os.getenv("DB_HOST", "localhost"),
+    port=int(os.getenv("DB_PORT", "3306")),
+    user=os.getenv("DB_USER", "root"),
+    password=os.getenv("DB_PASSWORD", ""),
+    database=os.getenv("DB_NAME", "fuel_consumption_db"),
+    ssl_disabled=False,
+)
+
 def get_db_connection():
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        port=int(os.getenv("DB_PORT", "3306")),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "fuel_consumption_db"),
-        ssl_disabled=False,
-    )
+    return db_pool.get_connection()
 
 
 def query(sql, params=()):
